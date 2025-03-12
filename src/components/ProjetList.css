@@ -1,0 +1,40 @@
+/* ProjetList.css */
+
+/* Style pour le conteneur principal */
+.projet-list-container {
+    padding: 20px;
+    
+  }
+  
+  /* Style pour le titre */
+  .projet-list-title {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Style pour le bouton "Ajouter un projet" */
+  .add-projet-button {
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+ 
+  
+  /* Style pour l'en-tête du tableau */
+  .projet-table thead th {
+    background-color: #268ff5;
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+    
+  }
+  
+  /* Style pour les cellules du tableau */
+  .projet-table tbody td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    
+  }
+  
