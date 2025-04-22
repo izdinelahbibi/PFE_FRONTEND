@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-import GestionUser from './GestionUser';
-import GestionDepartement from './GestionDepartement'; // Importez le nouveau composant
-import Projet from './Projet';
+import Sidebar from './Sidebar';
+import GestionUser from './GestionUser/GestionUser';
+import GestionDepartement from './GestionDep/GestionDepartement';
+import GestionRubrique from './GestionRubrique/GestionRubrique';
+import Profil from './Profil/Profil';
 
 const Dashboard = () => {
   const [activeComponent, setActiveComponent] = useState('welcome');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // État pour la Sidebar
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,36 +28,26 @@ const Dashboard = () => {
 
   const renderComponent = () => {
     switch (activeComponent) {
+      default:
       case 'users':
-        default:  
-        return <GestionUser />;
+        return <GestionUser  isSidebarOpen={isSidebarOpen} />;
       case 'departements':
-        return <GestionDepartement />; 
-        case 'Projets':
-          return <Projet />; 
+        return <GestionDepartement isSidebarOpen={isSidebarOpen} />;
+        case 'rubriques':
+  return <GestionRubrique isSidebarOpen={isSidebarOpen} />;
+        case 'Profil':
+        return <Profil  isSidebarOpen={isSidebarOpen} />;
+      
     }
   };
 
   return (
     <div style={styles.container}>
-      <Navbar onLogout={handleLogout} />
+      {/* Passez isSidebarOpen à la Navbar */}
+      <Navbar onLogout={handleLogout} isSidebarOpen={isSidebarOpen} />
       <div style={styles.dashboard}>
-        <div style={styles.sidebar}>
-          <ul style={styles.sidebarList}>
-            <li style={styles.sidebarItem} onClick={() => setActiveComponent('welcome')}>
-            Statistique
-            </li>
-            <li style={styles.sidebarItem} onClick={() => setActiveComponent('users')}>
-              Ajouter/Modifier des utilisateurs 
-            </li>
-            <li style={styles.sidebarItem} onClick={() => setActiveComponent('departements')}>
-              Ajouter des départements 
-            </li>
-            <li style={styles.sidebarItem} onClick={() => setActiveComponent('Projets')}>
-              Projets
-            </li>
-          </ul>
-        </div>
+        {/* Passez setIsSidebarOpen à la Sidebar */}
+        <Sidebar setActiveComponent={setActiveComponent} setIsSidebarOpen={setIsSidebarOpen} onLogout={handleLogout}/>
         <div style={styles.mainContent}>{renderComponent()}</div>
       </div>
     </div>
@@ -73,22 +66,6 @@ const styles = {
     flex: 1,
     display: 'flex',
     overflow: 'hidden',
-  },
-  sidebar: {
-    width: '250px',
-    backgroundColor: '#f4f4f4',
-    padding: '20px',
-    boxSizing: 'border-box',
-    overflowY: 'auto',
-  },
-  sidebarList: {
-    listStyleType: 'none',
-    padding: 0,
-  },
-  sidebarItem: {
-    margin: '20px 0',
-    cursor: 'pointer',
-    fontWeight: 'bold',
   },
   mainContent: {
     flexGrow: 1,

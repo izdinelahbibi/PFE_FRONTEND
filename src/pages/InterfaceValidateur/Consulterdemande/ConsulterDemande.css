@@ -1,0 +1,104 @@
+/* ConsulterDemande.css */
+
+/* Styles globaux */
+.consulter-demande-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .consulter-demande-container h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Tableau */
+  .consulter-demande-container table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .consulter-demande-container th,
+  .consulter-demande-container td {
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .consulter-demande-container th {
+    background-color: #004f83;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .consulter-demande-container tr {
+    transition: background-color 0.2s ease;
+  }
+  
+  .consulter-demande-container tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .consulter-demande-container tr:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .consulter-demande-container a {
+    color: #004f83;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .consulter-demande-container a:hover {
+    color: #2980b9;
+  }
+  
+  .consulter-demande-container button {
+    background-color: #004f83;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .consulter-demande-container button:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Modal */
+  .consulter-demande-container .modal-content {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .consulter-demande-container .modal-header {
+    background-color: #e4e9f7;
+    color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  
+  .consulter-demande-container .modal-title {
+    font-weight: bold;
+  }
+  
+  .consulter-demande-container .modal-body {
+    padding: 20px;
+  }
+  
+  .consulter-demande-container .modal-footer {
+    border-top: 1px solid #ddd;
+    padding: 15px;
+  }
+  
+  /* Icônes */
+  .consulter-demande-container .fa-download,
+  .consulter-demande-container .fa-edit {
+    margin-right: 8px;
+  }

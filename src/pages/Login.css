@@ -1,6 +1,14 @@
 /* Login.css */
+
+
 .vh-100 {
-  height: 100vh;
+  height: 100vh; /* Couvre toute la hauteur de l'écran */
+  background-image: url('../assets/background.jpg'); /* Chemin de l'image de fond */
+  background-size: cover; /* L'image couvre toute la zone sans distorsion */
+  background-repeat: no-repeat; /* Empêche la répétition de l'image */
+  background-size: 95% 95%;
+
+
 }
 
 .card {
@@ -29,4 +37,32 @@
 .logo-container img {
   max-width: 100%;
   height: auto;
+}
+
+.login-container {
+  background-color: #f8f9fa;
+}
+
+.login-card {
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.login-logo {
+  max-width: 100%;
+  height: auto;
+}
+
+.login-button {
+  padding: 10px;
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+@media (max-width: 576px) {
+  .login-card {
+    width: 100%;
+  }
 }

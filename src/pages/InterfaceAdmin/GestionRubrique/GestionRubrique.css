@@ -1,0 +1,294 @@
+/* GestionRubrique.css - Styles combinés innovants */
+
+/* Variables CSS pour une cohérence globale */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --danger-color: red;
+    --success-color: #4ad66d;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --transition-speed: 0.3s;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Styles de base pour le conteneur principal */
+  .rubrique-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark-color);
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  .rubrique-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .rubrique-header h2 {
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+  
+  /* Boutons styles */
+  .rubrique-add-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    box-shadow: var(--box-shadow);
+  }
+  
+  .rubrique-add-button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+  }
+  
+  /* Table styles avec design moderne */
+  .table-container {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  .rubrique-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  
+  .rubrique-table thead {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .rubrique-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+  }
+  
+  .rubrique-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+  }
+  
+  .rubrique-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .rubrique-table tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+  }
+  
+  /* Boutons d'action dans le tableau */
+  .edit-button, .delete-button {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .edit-button {
+    background-color: #ffc107;
+    color: var(--dark-color);
+  }
+  
+  .delete-button {
+    background-color: var(--danger-color);
+    color: white;
+  }
+  
+  .edit-button:hover, .delete-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow);
+  }
+  
+  /* Styles pour le modal */
+  .rubrique-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .rubrique-modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform-origin: center;
+    animation: scaleIn 0.3s ease-out;
+  }
+  
+  .rubrique-modal-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+  
+  /* Form styles */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark-color);
+  }
+  
+  .form-group input, .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color var(--transition-speed);
+  }
+  
+  .form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+  }
+  
+  .form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .has-error input {
+    border-color: var(--danger-color);
+  }
+  
+  .error-text {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+  
+  /* Boutons du modal */
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .cancel-button, .save-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .cancel-button {
+    background-color: #e9ecef;
+    color: var(--dark-color);
+  }
+  
+  .save-button {
+    background-color: var(--success-color);
+    color: white;
+  }
+  
+  .cancel-button:hover, .save-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow);
+  }
+  
+  /* États de chargement */
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+  }
+  
+  .no-data {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from { 
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .rubrique-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .rubrique-table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    .modal-actions {
+      justify-content: center;
+    }
+  }

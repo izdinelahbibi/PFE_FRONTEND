@@ -1,40 +1,141 @@
-/* ProjetList.css */
-
-/* Style pour le conteneur principal */
+/* Conteneur principal */
 .projet-list-container {
-    padding: 20px;
-    
-  }
-  
-  /* Style pour le titre */
-  .projet-list-title {
-    margin-bottom: 20px;
-    color: #333;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  /* Style pour le bouton "Ajouter un projet" */
-  .add-projet-button {
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  
- 
-  
-  /* Style pour l'en-tête du tableau */
-  .projet-table thead th {
-    background-color: #268ff5;
-    color: #fff;
-    padding: 12px;
-    text-align: left;
-    
-  }
-  
-  /* Style pour les cellules du tableau */
-  .projet-table tbody td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    
-  }
-  
+  padding: 30px;
+  border-radius: 15px;
+  margin: 20px;
+  transition: all 0.3s ease;
+}
+
+.projet-list-container:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
+}
+
+/* Style pour le titre */
+.projet-list-title {
+  margin-bottom: 25px;
+  color: #004f83; /* Couleur principale */
+  font-size: 28px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Style pour le bouton "Ajouter un projet" */
+.add-projet-button {
+  margin-bottom: 25px;
+  background-color: #007bff; /* Bleu vif */
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); /* Ombre bleue */
+}
+
+.add-projet-button:hover {
+  background-color: #0056b3; /* Bleu foncé au survol */
+  transform: translateY(-2px); /* Effet de levée */
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3); /* Ombre plus prononcée */
+}
+
+.add-projet-button:active {
+  transform: translateY(0); /* Retour à la position initiale */
+}
+
+/* Style pour le tableau */
+.projet-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre douce */
+}
+
+/* Style pour l'en-tête du tableau */
+.projet-table thead th {
+  background-color: #fff; /* Bleu vif */
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #fff; /* Bordure bleue plus foncée */
+}
+
+/* Style pour les cellules du tableau */
+.projet-table tbody td {
+  padding: 14px;
+  border-bottom: 1px solid #f0f0f0; /* Bordure grise légère */
+  color: #333;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+/* Effet de survol sur les lignes du tableau */
+.projet-table tbody tr:hover td {
+  background-color: #f8f9fa; /* Fond gris très clair au survol */
+}
+
+/* Style pour les boutons d'action dans le tableau */
+.action-button {
+  padding: 8px 16px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-button.edit {
+  background-color: #28a745; /* Vert */
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2); /* Ombre verte */
+}
+
+.action-button.delete {
+  background-color: #dc3545; /* Rouge */
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(220, 53, 69, 0.2); /* Ombre rouge */
+}
+
+.action-button:hover {
+  transform: translateY(-2px); /* Effet de levée */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombre plus prononcée */
+}
+
+.action-button:active {
+  transform: translateY(0); /* Retour à la position initiale */
+}
+
+/* Style pour les lignes impaires du tableau */
+.projet-table tbody tr:nth-child(odd) {
+  background-color: #fafafa; /* Fond légèrement gris pour les lignes impaires */
+}
+
+/* Style pour les bordures arrondies du tableau */
+.projet-table {
+  border-radius: 12px;
+}
+
+.projet-table thead th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.projet-table thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.projet-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+.projet-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}

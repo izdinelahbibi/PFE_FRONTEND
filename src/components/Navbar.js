@@ -1,34 +1,28 @@
 import React from 'react';
 import logo from '../assets/logo.jpg'; // Importez le logo ici
 
-const Navbar = ({ onLogout }) => {
+const Navbar = ({ isSidebarOpen }) => {
   const navbarStyle = {
     padding: '10px 20px',
-    backgroundColor: '#007bff', // Couleur de fond de la navbar
+    backgroundColor: '#004f83',
     display: 'flex',
-    justifyContent: 'space-between', // Pour espacer les éléments
-    alignItems: 'center', // Alignement vertical des éléments
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginLeft: isSidebarOpen ? '250px' : '78px', // Ajustez la marge gauche
+    transition: 'margin-left 0.5s ease', // Transition fluide
   };
 
   const brandStyle = {
     fontSize: '1.3rem',
     marginLeft: '10px',
-    color: '#fff', // Couleur du texte
+    color: '#fff',
+    whiteSpace: 'nowrap', // Empêche le texte de passer à la ligne
   };
 
   const logoStyle = {
     width: '50px',
     height: '40px',
     verticalAlign: 'top', // Alignement vertical du logo
-  };
-
-  const logoutButtonStyle = {
-    padding: '5px 15px',
-    backgroundColor: '#dc3545', // Couleur rouge pour le bouton
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
   };
 
   return (
@@ -41,9 +35,6 @@ const Navbar = ({ onLogout }) => {
         />
         <span style={brandStyle}>Groupe Chimique Tunisien</span>
       </div>
-      <button style={logoutButtonStyle} onClick={onLogout}>
-        Déconnexion
-      </button>
     </nav>
   );
 };

@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Spinner, Alert, Container, Button, Modal, Form } from 'react-bootstrap';
+import { Table, Spinner, Alert, Button, Modal, Form } from 'react-bootstrap';
+import '../ConsulterDemande/ConsulterDemande.css'; // Importez le fichier CSS
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const ConsulterDemande = () => {
+
+const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme prop
   const [demandes, setDemandes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false); // État pour gérer l'affichage du modal
   const [selectedDemande, setSelectedDemande] = useState(null); // État pour stocker la demande à modifier
+
+  // Styles dynamiques pour la marge gauche
+  const containerStyle = {
+    marginLeft: isSidebarOpen ? '250px' : '78px', // Ajustez la marge gauche
+    padding: '20px',
+    transition: 'margin-left 0.5s ease', // Transition fluide
+  };
 
   useEffect(() => {
     const fetchDemandes = async () => {
@@ -116,7 +126,7 @@ const ConsulterDemande = () => {
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
+      <div style={containerStyle} className="d-flex justify-content-center align-items-center vh-100">
         <Spinner animation="border" role="status" className="custom-spinner">
           <span className="visually-hidden">Chargement en cours...</span>
         </Spinner>
@@ -126,25 +136,26 @@ const ConsulterDemande = () => {
 
   if (error) {
     return (
-      <Container className="mt-5">
+      <div style={containerStyle}>
         <Alert variant="danger" className="text-center custom-alert">
           Erreur: {error}
         </Alert>
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container className="mt-5">
+    <div style={containerStyle}>
       <h2 className="text-center mb-4">Liste des Demandes d'Achats</h2>
       <Table striped bordered hover responsive className="custom-table">
         <thead>
           <tr>
             <th scope="col">Projet</th>
             <th scope="col">Description</th>
-            <th scope="col">Quantité</th>
+            <th scope="col">Quantite</th>
             <th scope="col">Budget</th>
-            <th scope="col">Caractéristiques Techniques</th>
+            <th scope="col">Caracteristiques Techniques</th>
+            <th>Motif de Refus</th>
             <th scope="col">Statut</th>
             <th scope="col">Actions</th>
           </tr>
@@ -154,14 +165,24 @@ const ConsulterDemande = () => {
             <tr key={demande.id}>
               <td>{demande.projet_intitule}</td>
               <td>{demande.description}</td>
-              <td>{demande.quantité}</td>
+              <td>{demande.quantite}</td>
               <td>{demande.budget}</td>
-              <td>{demande.caractéristique_tech}</td>
+              <td>{demande.caracteristique_tech}</td>
+              <td>{demande.motif_refus || 'N/A'}</td>
               <td>{demande.statut}</td>
               <td>
-                <Button variant="warning" onClick={() => handleEdit(demande)}>Modifier</Button>{' '}
-                <Button variant="danger" onClick={() => handleDelete(demande.id)}>Supprimer</Button>
+                {demande.statut === 'Approuvé' || demande.statut === 'Rejeté' ? (
+                  <span style={{ color: demande.statut === 'Approuvé' ? 'green' : 'red' }}>
+                    {demande.statut === 'Approuvé' ? 'Demande approuvée' : 'Demande rejetée'}
+                  </span>
+                ) : (
+                  <>
+                    <Button variant="success" onClick={() => handleEdit(demande)}>Modifier</Button>{' '}
+                    <Button variant="danger" onClick={() => handleDelete(demande.id)}>Supprimer</Button>
+                  </>
+                )}
               </td>
+
             </tr>
           ))}
         </tbody>
@@ -188,8 +209,8 @@ const ConsulterDemande = () => {
                 <Form.Label>Quantité</Form.Label>
                 <Form.Control
                   type="number"
-                  name="quantité"
-                  value={selectedDemande.quantité}
+                  name="quantite"
+                  value={selectedDemande.quantite}
                   onChange={handleChange}
                 />
               </Form.Group>
@@ -206,8 +227,8 @@ const ConsulterDemande = () => {
                 <Form.Label>Caractéristiques Techniques</Form.Label>
                 <Form.Control
                   type="textarea"
-                  name="caractéristique_tech"
-                  value={selectedDemande.caractéristique_tech}
+                  name="caracteristique_tech"
+                  value={selectedDemande.caracteristique_tech}
                   onChange={handleChange}
                 />
               </Form.Group>
@@ -223,7 +244,7 @@ const ConsulterDemande = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
   );
 };
 

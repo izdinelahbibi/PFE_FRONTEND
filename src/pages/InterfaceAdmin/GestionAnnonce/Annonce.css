@@ -1,0 +1,79 @@
+/* Style général du conteneur */
+.annonce-container {
+    transition: margin-left 0.3s ease;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 56px); /* Prend en compte la hauteur de la navbar */
+  }
+  
+  /* Style lorsque la sidebar est ouverte */
+  .sidebar-open {
+    margin-left: 240px;
+  }
+  
+  /* Style lorsque la sidebar est fermée */
+  .sidebar-closed {
+    margin-left: 0;
+  }
+  
+  /* Style de la carte principale */
+  .annonce-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+  }
+  
+  /* Style du titre */
+  .annonce-title {
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  /* Style des éléments de liste */
+  .annonce-item {
+    transition: all 0.3s ease;
+    border-left: 4px solid #3498db;
+    margin-bottom: 10px;
+  }
+  
+  .annonce-item:hover {
+    background-color: #f1f8ff;
+    transform: translateX(5px);
+  }
+  
+  /* Style du badge de date */
+  .date-badge {
+    font-size: 0.75rem;
+    font-weight: 400;
+    background-color: #e9ecef !important;
+    color: #495057 !important;
+  }
+  
+  /* Style du bouton supprimer */
+  .delete-btn {
+    transition: all 0.2s ease;
+  }
+  
+  .delete-btn:hover {
+    transform: scale(1.1);
+    color: #dc3545 !important;
+  }
+  
+  /* Style du textarea */
+  .annonce-textarea {
+    resize: none;
+    border-radius: 5px;
+  }
+  
+  /* Style pour les messages d'erreur */
+  .error-message {
+    animation: fadeIn 0.5s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }

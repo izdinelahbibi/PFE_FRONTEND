@@ -11,6 +11,7 @@ export const login = async (email, password) => {
     let errorMessage = 'Email ou mot de passe incorrect';
     try {
       const errorData = await response.json();
+      // Si le message d'erreur est lié au statut de l'utilisateur
       errorMessage = errorData.message || errorMessage;
     } catch (err) {
       const errorText = await response.text();
@@ -34,5 +35,3 @@ export const login = async (email, password) => {
 
   return data; // Retourne { token, role }
 };
-
-

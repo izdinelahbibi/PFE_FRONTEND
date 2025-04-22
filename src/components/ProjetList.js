@@ -1,40 +1,70 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
-import './ProjetList.css'; // Importer le fichier CSS
+import { Eye } from 'react-bootstrap-icons';
+import './ProjetList.css';
 
-const ProjetList = ({ projets, openModal }) => {
+const ProjetList = ({ projets, rubriques, openModal, handleOpenPlanningModal, handleShowDepenses }) => {
   return (
     <div className="projet-list-container">
-      <h2 className="projet-list-title">Projets du Département</h2>
-      <Button onClick={openModal} variant="success" className="add-projet-button">
+      <Button onClick={openModal} variant="success" className="add-projet-button mb-3">
         + Ajouter un projet
       </Button>
-      <Table className="projet-table" striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Intitulé</th>
-            <th>Type d'investissement</th>
-            <th>Site</th>
-            <th>Présentation du projet</th>
-            <th>Coût estimatif</th>
-            <th>Date de création</th>
-            <th>Planning</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projets.map((projet) => (
-            <tr key={projet.id}>
-              <td>{projet.intitule}</td>
-              <td>{projet.type_investissement}</td>
-              <td>{projet.site}</td>
-              <td>{projet.presentation_projet}</td>
-              <td>{projet.cout_estimatif}</td>
-              <td>{new Date(projet.date_creation).toLocaleDateString()}</td>
-              <td>{projet.planning}</td>
+
+      {projets.length === 0 ? (
+        <div className="alert alert-info">Aucun projet trouvé</div>
+      ) : (
+        <Table className="projet-table" striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th>Intitulé</th>
+              <th>Type d'investissement</th>
+              <th>Site</th>
+              <th>presentation projet</th>
+              <th>opportunite</th>
+              <th>composantes_projet</th>
+              <th>Coût estimatif</th>
+              <th>Date de création</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {projets.map((projet) => (
+              <tr key={projet.id}>
+                 <td>{projet.intitule}</td>
+                <td>{projet.type_investissement}</td>
+                <td>{projet.site}</td>
+                <td>{projet.presentation_projet}</td>
+                <td>{projet.opportunite}</td>
+                <td>{projet.composantes_projet}</td>
+                <td>{projet.cout_estimatif ? `${projet.cout_estimatif} DT` : 'Non spécifié'}</td>
+                <td>{new Date(projet.date_creation).toLocaleDateString()}</td>
+                <td>
+                  <div className="d-flex gap-2">
+                    {projet.planning === 'Annuel' && (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => handleOpenPlanningModal(projet.id)}
+                      >
+                        Ajouter Planning
+                      </Button>
+                    )}
+                    <Button
+                      variant="info"
+                      size="sm"
+                      onClick={() => handleShowDepenses(projet.id)}
+                      title="Voir les dépenses"
+                    >
+                      <Eye className="me-1" />
+                      Dépenses
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
     </div>
   );
 };

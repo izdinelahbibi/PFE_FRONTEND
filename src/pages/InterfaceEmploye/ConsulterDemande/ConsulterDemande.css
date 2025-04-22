@@ -1,0 +1,162 @@
+/* ConsulterDemande.css */
+
+/* Style global pour le conteneur */
+.container-custom {
+    margin-top: 80px; /* Ajustez en fonction de la hauteur de votre Navbar */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: margin-left 0.5s ease; /* Transition fluide pour la marge gauche */
+  }
+  
+  /* Style pour le titre */
+  h2.text-center {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style pour la table */
+  .custom-table {
+    background-color: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .custom-table thead {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #ffffff;
+  }
+  
+  .custom-table th,
+  .custom-table td {
+    padding: 15px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .custom-table tbody tr {
+    transition: all 0.3s ease;
+  }
+  
+  .custom-table tbody tr:hover {
+    background-color: #f1f3f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style pour les boutons */
+  .btn-custom {
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-warning {
+    background-color: #ffc107;
+    border: none;
+    color: #2c3e50;
+  }
+  
+  .btn-warning:hover {
+    background-color: #e0a800;
+    transform: translateY(-2px);
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border: none;
+    color: #ffffff;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+  }
+  
+  /* Style pour le modal */
+  .modal-content {
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+
+  
+  .modal-title {
+    font-weight: bold;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .modal-footer {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+  
+  /* Style pour les formulaires dans le modal */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-control {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .form-control:focus {
+    border-color: #004f83;
+    box-shadow: 0 0 8px rgba(106, 17, 203, 0.2);
+  }
+  
+  /* Style pour le spinner de chargement */
+  .custom-spinner {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
+    color: #6a11cb;
+  }
+  
+  /* Style pour les alertes d'erreur */
+  .custom-alert {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Animation pour les boutons */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .btn-primary {
+    animation: pulse 2s infinite;
+  }
+  
+  /* Effet de survol pour les boutons du modal */
+  .modal-footer .btn-primary:hover {
+    background-color: #2575fc;
+    transform: translateY(-2px);
+  }
+  
+  /* Style pour les icônes dans les boutons */
+  .btn i {
+    margin-right: 5px;
+  }
