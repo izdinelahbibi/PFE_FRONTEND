@@ -21,11 +21,19 @@ const Profil = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  
+  // États pour la modification du mot de passe
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     fetchUtilisateurData();
@@ -177,12 +185,68 @@ const Profil = () => {
     }
   };
 
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordMessage('Veuillez remplir tous les champs.');
+      return;
+    }
+  
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage('Les nouveaux mots de passe ne correspondent pas.');
+      return;
+    }
+  
+    if (newPassword.length < 6) {
+      setPasswordMessage('Le mot de passe doit contenir au moins 6 caractères.');
+      return;
+    }
+  
+    setChangingPassword(true);
+    setPasswordMessage(''); // Clear previous messages
+  
+    try {
+      const token = localStorage.getItem('userToken');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/utilisateur/changer-mot-de-passe`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        setPasswordMessage(result.message || 'Erreur lors du changement de mot de passe');
+        return;
+      }
+  
+      setPasswordMessage('Mot de passe changé avec succès !');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => {
+        setShowPasswordModal(false);
+      }, 1500);
+    } catch (error) {
+      console.error('Erreur:', error);
+      setPasswordMessage('Erreur lors du changement de mot de passe');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+  
+
   return (
     <div className="profile-container">
       {message && <Alert variant={message.includes('succès') ? 'success' : 'danger'} onClose={() => setMessage('')} dismissible>{message}</Alert>}
       
       <div className="profile-header">
-        <h2>Profil de l'utilisateur</h2>
+        <h2>Profil de Validateur N1</h2>
       </div>
 
       {loading ? (
@@ -233,9 +297,18 @@ const Profil = () => {
             <p><strong>Téléphone:</strong> {utilisateur.Telephone}</p>
           </div>
 
-          <Button className="profile-button" onClick={() => setShowModal(true)}>
-            Modifier le profil
-          </Button>
+          <div className="profile-actions">
+            <Button className="profile-button" onClick={() => setShowModal(true)}>
+              Modifier le profil
+            </Button>
+            <Button 
+              variant="outline-primary" 
+              className="profile-button"
+              onClick={() => setShowPasswordModal(true)}
+            >
+              Changer le mot de passe
+            </Button>
+          </div>
         </div>
       )}
 
@@ -354,6 +427,82 @@ const Profil = () => {
           </Button>
           <Button variant="primary" onClick={handleSave}>
             Sauvegarder
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal pour changer le mot de passe */}
+      <Modal show={showPasswordModal} onHide={() => {
+        setShowPasswordModal(false);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setPasswordMessage('');
+      }}>
+        <Modal.Header closeButton>
+          <Modal.Title>Changer le mot de passe</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {passwordMessage && (
+            <Alert variant={passwordMessage.includes('succès') ? 'success' : 'danger'}>
+              {passwordMessage}
+            </Alert>
+          )}
+          <Form>
+            <Form.Group controlId="formCurrentPassword" className="mb-3">
+              <Form.Label>Mot de passe actuel</Form.Label>
+              <Form.Control
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                disabled={changingPassword}
+              />
+            </Form.Group>
+            <Form.Group controlId="formNewPassword" className="mb-3">
+              <Form.Label>Nouveau mot de passe</Form.Label>
+              <Form.Control
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                disabled={changingPassword}
+              />
+            </Form.Group>
+            <Form.Group controlId="formConfirmPassword" className="mb-3">
+              <Form.Label>Confirmer le nouveau mot de passe</Form.Label>
+              <Form.Control
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={changingPassword}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button 
+            variant="secondary" 
+            onClick={() => {
+              setShowPasswordModal(false);
+              setCurrentPassword('');
+              setNewPassword('');
+              setConfirmPassword('');
+              setPasswordMessage('');
+            }}
+            disabled={changingPassword}
+          >
+            Annuler
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={handleChangePassword}
+            disabled={changingPassword}
+          >
+            {changingPassword ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                <span className="ms-2">En cours...</span>
+              </>
+            ) : 'Changer le mot de passe'}
           </Button>
         </Modal.Footer>
       </Modal>

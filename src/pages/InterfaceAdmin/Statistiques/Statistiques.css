@@ -1,0 +1,162 @@
+/* styles.css */
+
+/* Animation d'entrée pour le conteneur principal */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Style général avec transition fluide */
+.stat-container {
+  animation: fadeIn 0.6s ease-out forwards;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+  min-height: 100vh;
+}
+
+/* Cartes avec effet de verre (glassmorphism) */
+.stat-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0088FE 0%, #00C49F 50%, #FFBB28 100%);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
+}
+
+/* Titres avec dégradé de couleur */
+.stat-title {
+  background: linear-gradient(90deg, #3a3a3a 0%, #6a6a6a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* Graphiques avec fond transparent */
+.stat-chart-container {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Tableaux modernes */
+.stat-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.stat-table thead th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 500;
+  padding: 16px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+}
+
+.stat-table tbody tr {
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.stat-table tbody tr:nth-child(even) {
+  background: rgba(245, 245, 245, 0.9);
+}
+
+.stat-table tbody tr:hover {
+  background: rgba(240, 248, 255, 0.9);
+  transform: scale(1.005);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Effet de vague pour les sections */
+.section-wave {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.section-wave::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%230088FE'%3E%3C/path%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' fill='%2300C49F' opacity='.3'%3E%3C/path%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23FFBB28'%3E%3C/path%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+/* Animation des barres du graphique */
+.recharts-bar-rectangle {
+  transition: all 0.5s ease-out;
+  opacity: 0;
+  animation: barGrow 0.8s ease-out forwards;
+}
+
+@keyframes barGrow {
+  from { opacity: 0; transform: scaleY(0); transform-origin: bottom; }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+/* Animation des secteurs du camembert */
+.recharts-sector {
+  transition: all 0.5s ease-out;
+  opacity: 0;
+  animation: pieGrow 0.8s ease-out forwards;
+}
+
+@keyframes pieGrow {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .stat-container {
+    margin-left: 60px !important;
+    padding: 10px;
+  }
+  
+  .stat-card {
+    margin-bottom: 16px;
+  }
+  
+  .stat-chart-container {
+    padding: 8px;
+  }
+  
+  .stat-table thead th, 
+  .stat-table td {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+}

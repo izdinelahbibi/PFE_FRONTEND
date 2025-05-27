@@ -5,6 +5,8 @@ import Sidebar from './Sidebar';
 import GestionUser from './GestionUser/GestionUser';
 import GestionDepartement from './GestionDep/GestionDepartement';
 import GestionRubrique from './GestionRubrique/GestionRubrique';
+import Statistiques from './Statistiques/Statistiques';
+import Notification from './Notification/Notification';
 import Profil from './Profil/Profil';
 
 const Dashboard = () => {
@@ -29,15 +31,20 @@ const Dashboard = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       default:
+      case 'Statistiques':
+        return <Statistiques isSidebarOpen={isSidebarOpen} />;
       case 'users':
-        return <GestionUser  isSidebarOpen={isSidebarOpen} />;
+        return <GestionUser isSidebarOpen={isSidebarOpen} />;
       case 'departements':
         return <GestionDepartement isSidebarOpen={isSidebarOpen} />;
-        case 'rubriques':
-  return <GestionRubrique isSidebarOpen={isSidebarOpen} />;
-        case 'Profil':
-        return <Profil  isSidebarOpen={isSidebarOpen} />;
-      
+      case 'rubriques':
+        return <GestionRubrique isSidebarOpen={isSidebarOpen} />;
+      case 'Notification':
+        return <Notification isSidebarOpen={isSidebarOpen} />;
+
+      case 'Profil':
+        return <Profil isSidebarOpen={isSidebarOpen} />;
+
     }
   };
 
@@ -47,7 +54,7 @@ const Dashboard = () => {
       <Navbar onLogout={handleLogout} isSidebarOpen={isSidebarOpen} />
       <div style={styles.dashboard}>
         {/* Passez setIsSidebarOpen à la Sidebar */}
-        <Sidebar setActiveComponent={setActiveComponent} setIsSidebarOpen={setIsSidebarOpen} onLogout={handleLogout}/>
+        <Sidebar setActiveComponent={setActiveComponent} setIsSidebarOpen={setIsSidebarOpen} onLogout={handleLogout} />
         <div style={styles.mainContent}>{renderComponent()}</div>
       </div>
     </div>

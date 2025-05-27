@@ -1,14 +1,10 @@
-/* Login.css */
 
-
-.vh-100 {
-  height: 100vh; /* Couvre toute la hauteur de l'écran */
-  background-image: url('../assets/background.jpg'); /* Chemin de l'image de fond */
-  background-size: cover; /* L'image couvre toute la zone sans distorsion */
-  background-repeat: no-repeat; /* Empêche la répétition de l'image */
-  background-size: 95% 95%;
-
-
+.login-container {
+  background-image: url('../assets/background.jpg'); /* chemin vers ton image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
 
 .card {
@@ -65,4 +61,20 @@
   .login-card {
     width: 100%;
   }
+}
+.forgot-password-link {
+  color: #6c757d;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.forgot-password-link:hover {
+  color: #0c539c;
+  text-decoration: underline;
+}
+
+.alert {
+  border-radius: 6px;
+  padding: 12px 15px;
 }

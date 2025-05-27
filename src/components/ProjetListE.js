@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Table, Button, Pagination } from 'react-bootstrap';
-import { Eye, Pencil } from 'react-bootstrap-icons';
+import { Eye, Pencil, Calculator } from 'react-bootstrap-icons';
+
 import './ProjetList.css';
 
-const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDepenses }) => {
+const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDepenses, handleShowBudget }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
 
@@ -37,9 +38,9 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
                 <th>Rubrique</th>
                 <th>Type d'investissement</th>
                 <th>Site</th>
-                <th>Présentation</th>
+                <th>Présentation Projet</th>
                 <th>Opportunité</th>
-                <th>Composantes</th>
+                <th>composantes Projet</th>
                 <th>Coût estimatif</th>
                 <th>Date de création</th>
                 <th>Actions</th>
@@ -52,16 +53,10 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
                   <td>{getRubriqueName(projet.rubrique_id)}</td>
                   <td>{projet.type_investissement}</td>
                   <td>{projet.site}</td>
-                  <td className="text-truncate" style={{ maxWidth: '150px' }} title={projet.presentation_projet}>
-                    {projet.presentation_projet}
-                  </td>
-                  <td className="text-truncate" style={{ maxWidth: '150px' }} title={projet.opportunite}>
-                    {projet.opportunite}
-                  </td>
-                  <td className="text-truncate" style={{ maxWidth: '150px' }} title={projet.composantes_projet}>
-                    {projet.composantes_projet}
-                  </td>
-                  <td>{projet.cout_estimatif ? `${projet.cout_estimatif} €` : 'Non spécifié'}</td>
+                  <td>{projet.presentation_projet}</td>
+                  <td>{projet.opportunite}</td>
+                  <td>{projet.composantes_projet}</td>
+                  <td>{projet.cout_estimatif ? `${projet.cout_estimatif} DT` : 'Non spécifié'}</td>
                   <td>{new Date(projet.date_creation).toLocaleDateString()}</td>
                   <td>
                     <div className="d-flex gap-2">
@@ -75,6 +70,15 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
                         Dépenses
                       </Button>
                       <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => handleShowBudget(projet.id)}
+                        title="Détail budgétaire"
+                      >
+                        <Calculator className="me-1" />
+                        Detail Budgétaire
+                      </Button>
+                      <Button
                         variant="warning"
                         size="sm"
                         onClick={() => openEditModal(projet)}
@@ -83,6 +87,7 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
                         <Pencil className="me-1" />
                         Modifier
                       </Button>
+                      
                     </div>
                   </td>
                 </tr>

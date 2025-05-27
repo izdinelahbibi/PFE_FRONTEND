@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Table, Button, Modal } from "react-bootstrap";
 import { FaEdit, FaEye } from "react-icons/fa";
 
+
 const UserTable = ({ users, handleEdit, handleDelete }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -28,6 +29,8 @@ const UserTable = ({ users, handleEdit, handleDelete }) => {
   return (
     <>
       <Table striped bordered hover>
+
+        
         <thead>
           <tr>
             <th>Nom</th>
@@ -89,6 +92,8 @@ const UserTable = ({ users, handleEdit, handleDelete }) => {
                 <p><strong>Prénom:</strong> {selectedUser.prenom}</p>
                 <p><strong>CIN:</strong> {selectedUser.cin}</p>
                 <p><strong>Matricule:</strong> {selectedUser.matricule}</p>
+                
+
                 <p><strong>Date Naissance:</strong> {selectedUser.dateNaissance || '-'}</p>
               </div>
               <div className="col-md-6">

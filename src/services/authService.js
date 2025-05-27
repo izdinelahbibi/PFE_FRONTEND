@@ -1,3 +1,6 @@
+
+
+
 export const login = async (email, password) => {
   const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
     method: 'POST',
@@ -34,4 +37,21 @@ export const login = async (email, password) => {
   }
 
   return data; // Retourne { token, role }
+};
+
+export const sendPasswordRequest = async (email, description) => {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/password-requests`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, description }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
 };

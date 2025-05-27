@@ -5,6 +5,7 @@ import Sidebar from './Sidebarv';
 import Profil from './Profil/Profil';
 import Consulterdemande from './Consulterdemande/Consulterdemande';
 import Projet from './Projet/Projet';
+import Demandesvalide from './Demandevalide/Demandevalide';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ValidateurDashboard = () => {
@@ -36,6 +37,8 @@ const ValidateurDashboard = () => {
         default:
         case 'consulterdemande':
             return <Consulterdemande isSidebarOpen={isSidebarOpen} />;
+            case 'Demandevalide':
+        return <Demandesvalide isSidebarOpen={isSidebarOpen} />;
         case 'projet':
         return <Projet isSidebarOpen={isSidebarOpen} />;
       case 'Profil':

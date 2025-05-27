@@ -108,11 +108,24 @@ export const updateProjet = async (token, projetId, projetData) => {
   return await response.json();
 };
 
+export const fetchBudgetDetails = async (token, projetId) => {
+  const response = await fetch(`${API_URL}/api/projet/${projetId}/budget`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Erreur lors de la récupération des détails budgétaires");
+  }
+
+  return response.json();
+};
+
 export { 
   fetchUserInfo, 
-  fetchProjetsByDepartement,
-  
-
+  fetchProjetsByDepartement,  
   addPlanningAnnuel, 
   fetchDepensesByProjet 
 };

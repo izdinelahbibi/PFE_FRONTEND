@@ -3,7 +3,6 @@ import {
   fetchRubriques,
   createRubrique,
   updateRubrique,
-  deleteRubrique
 } from '../../../services/rubriqueService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -41,19 +40,6 @@ const GestionRubrique = ({ isSidebarOpen }) => {
   const handleEdit = (rubrique) => {
     setCurrentRubrique(rubrique);
     setShowModal(true);
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette rubrique ?')) {
-      try {
-        await deleteRubrique(id);
-        toast.success('Rubrique supprimée avec succès');
-        loadRubriques();
-      } catch (error) {
-        toast.error('Erreur lors de la suppression');
-        console.error(error);
-      }
-    }
   };
 
   const handleSubmit = async (formData) => {
@@ -115,12 +101,7 @@ const GestionRubrique = ({ isSidebarOpen }) => {
                       >
                         Modifier
                       </button>
-                      <button
-                        onClick={() => handleDelete(rubrique.id)}
-                        className="delete-button"
-                      >
-                        Supprimer
-                      </button>
+                    
                     </td>
                   </tr>
                 ))

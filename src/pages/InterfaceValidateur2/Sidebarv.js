@@ -54,6 +54,14 @@ const Sidebar = ({ setActiveComponent, setIsSidebarOpen, onLogout }) => {
           <span className="tooltip">Validation Finale</span>
         </li>
 
+        <li onClick={() => setActiveComponent('Demandevalide')}>
+          <button className="link-button">
+            <i className="bx bx-check"></i>
+            <span className="link_name">Demande Validé</span>
+          </button>
+          <span className="tooltip">Demande Validé</span>
+        </li>
+
 
         
   

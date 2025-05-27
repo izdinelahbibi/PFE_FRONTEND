@@ -92,7 +92,7 @@ const Historiquedemande = ({ isSidebarOpen }) => {
                 <td>{demande.quantite}</td>
                 <td>{demande.budget}</td>
                 <td>{demande.caracteristique_tech}</td>
-                <td className="text-danger fw-bold">{demande.motif_refus || 'Non spécifié'}</td>
+                <td className="text-danger fw-bold">{demande.validateur2_motif || 'Non spécifié'}</td>
               </tr>
             ))}
           </tbody>

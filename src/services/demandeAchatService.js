@@ -1,3 +1,4 @@
+// services/demandeAchatService.js
 const API_URL = process.env.REACT_APP_API_URL;
 
 const getAuthHeaders = () => {
@@ -8,21 +9,17 @@ const getAuthHeaders = () => {
   };
 };
 
-const handleResponse = async (response) => {
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Erreur lors de la requête');
-  }
-  return response.json();
-};
-
 export const fetchDemandesAValider = async () => {
   try {
     const response = await fetch(`${API_URL}/api/demandes/validation1`, {
       method: 'GET',
       headers: getAuthHeaders()
     });
-    return await handleResponse(response);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erreur lors de la récupération des demandes');
+    }
+    return await response.json();
   } catch (error) {
     console.error('Erreur dans fetchDemandesAValider:', error);
     throw error;
@@ -35,7 +32,11 @@ export const validerDemande = async (id) => {
       method: 'POST',
       headers: getAuthHeaders()
     });
-    return await handleResponse(response);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erreur lors de la validation');
+    }
+    return await response.json();
   } catch (error) {
     console.error('Erreur dans validerDemande:', error);
     throw error;
@@ -49,7 +50,11 @@ export const rejeterDemande = async (id, motif) => {
       headers: getAuthHeaders(),
       body: JSON.stringify({ motif })
     });
-    return await handleResponse(response);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erreur lors du rejet');
+    }
+    return await response.json();
   } catch (error) {
     console.error('Erreur dans rejeterDemande:', error);
     throw error;
@@ -83,3 +88,5 @@ export const downloadFichierDemande = async (id) => {
     throw error;
   }
 };
+
+

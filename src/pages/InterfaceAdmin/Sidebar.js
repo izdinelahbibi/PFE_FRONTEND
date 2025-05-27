@@ -56,12 +56,12 @@ const Sidebar = ({ setActiveComponent, setIsSidebarOpen, onLogout }) => {
         <i className="bx bx-menu" id="btn" ref={closeBtnRef}></i>
       </div>
       <ul className="nav-list">
-        <li onClick={() => setActiveComponent("welcome")}>
+        <li onClick={() => setActiveComponent("Statistiques")}>
           <button className="link-button">
             <i className="bx bx-stats"></i>
-            <span className="link_name">Tableau de bord</span>
+            <span className="link_name">Statistiques</span>
           </button>
-          <span className="tooltip">Tableau de bord</span>
+          <span className="tooltip">Statistiques</span>
         </li>
         <li onClick={() => setActiveComponent("users")}>
           <button className="link-button">
@@ -84,6 +84,15 @@ const Sidebar = ({ setActiveComponent, setIsSidebarOpen, onLogout }) => {
           </button>
           <span className="tooltip">Rubriques</span>
         </li>
+
+        <li onClick={() => setActiveComponent("Notification")}>
+          <button className="link-button">
+            <i className="bx bxs-bell-ring"></i>
+            <span className="link_name">Problem Notification</span>
+          </button>
+          <span className="tooltip">Problem Notification</span>
+        </li>
+
 
         {/* Bouton de déconnexion */}
         <li onClick={onLogout}>

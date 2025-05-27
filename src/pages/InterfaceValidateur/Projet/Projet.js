@@ -29,7 +29,7 @@ const Projet = ({ isSidebarOpen }) => {
     composantes_projet: '',
     presentation_projet: '',
     cout_estimatif: '',
-    planning: 'Annuel',
+    planning: 'Annuel', // Valeur par défaut définie explicitement
   });
 
   const containerStyle = {
@@ -48,7 +48,12 @@ const Projet = ({ isSidebarOpen }) => {
         const departementId = userData.departement_id;
 
         const projetsData = await fetchProjetsByDepartement(token, departementId);
-        setProjets(projetsData);
+        // Assure que tous les projets ont un champ 'planning' (valeur par défaut 'Annuel' si manquant)
+        const projetsAvecPlanning = projetsData.map(projet => ({
+          ...projet,
+          planning: projet.planning || 'Annuel',
+        }));
+        setProjets(projetsAvecPlanning);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -81,7 +86,7 @@ const Projet = ({ isSidebarOpen }) => {
       composantes_projet: '',
       presentation_projet: '',
       cout_estimatif: '',
-      planning: 'Annuel',
+      planning: 'Annuel', // Réinitialisation explicite
     });
     setPlanningData({
       annee: new Date().getFullYear(),
@@ -97,15 +102,14 @@ const Projet = ({ isSidebarOpen }) => {
   
       const userData = await fetchUserInfo(token);
       
-      // D'abord créer le projet seul
+      // Création du projet avec une valeur 'planning' par défaut
       const projetResponse = await addProjet(token, {
         ...newProjet,
         departement_id: userData.departement_id,
+        planning: newProjet.planning || 'Annuel', // Garantit une valeur par défaut
       });
       
-      console.log("Projet ajouté:", projetResponse);
-  
-      // Ensuite, si c'est un planning annuel, ajouter le planning
+      // Ajout du planning si le type est 'Annuel'
       if (newProjet.planning === 'Annuel') {
         try {
           await addPlanningAnnuel(token, {
@@ -115,12 +119,12 @@ const Projet = ({ isSidebarOpen }) => {
           });
         } catch (planningError) {
           console.error("Erreur lors de l'ajout du planning:", planningError);
-          // Vous pouvez choisir de continuer même si le planning échoue
         }
       } 
   
+      // Recharge la liste des projets
       const projetsData = await fetchProjetsByDepartement(token, userData.departement_id);
-      setProjets(projetsData);
+      setProjets(projetsData.map(p => ({ ...p, planning: p.planning || 'Annuel' })));
   
       closeModal();
       setShowSuccessModal(true);
@@ -170,7 +174,7 @@ const Projet = ({ isSidebarOpen }) => {
 
       const userData = await fetchUserInfo(token);
       const projetsData = await fetchProjetsByDepartement(token, userData.departement_id);
-      setProjets(projetsData);
+      setProjets(projetsData.map(p => ({ ...p, planning: p.planning || 'Annuel' })));
 
       handleClosePlanningModal();
       setShowSuccessModal(true);
@@ -251,6 +255,7 @@ const Projet = ({ isSidebarOpen }) => {
         renderPlanningForm={renderPlanningForm}
       />
 
+      {/* Modals pour feedback et actions supplémentaires */}
       <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>✅ Succès</Modal.Title>
@@ -321,7 +326,7 @@ const Projet = ({ isSidebarOpen }) => {
                 {depenses.map((depense, index) => (
                   <tr key={index}>
                     <td>{depense.annee}</td>
-                    <td>{depense.depense.toLocaleString('fr-FR')} €</td>
+                    <td>{depense.depense.toLocaleString('fr-FR')} DT</td>
                   </tr>
                 ))}
               </tbody>

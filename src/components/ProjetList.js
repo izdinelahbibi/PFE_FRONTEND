@@ -3,7 +3,7 @@ import { Table, Button } from 'react-bootstrap';
 import { Eye } from 'react-bootstrap-icons';
 import './ProjetList.css';
 
-const ProjetList = ({ projets, rubriques, openModal, handleOpenPlanningModal, handleShowDepenses }) => {
+const ProjetList = ({ projets, openModal, handleOpenPlanningModal, handleShowDepenses }) => {
   return (
     <div className="projet-list-container">
       <Button onClick={openModal} variant="success" className="add-projet-button mb-3">
@@ -19,9 +19,9 @@ const ProjetList = ({ projets, rubriques, openModal, handleOpenPlanningModal, ha
               <th>Intitulé</th>
               <th>Type d'investissement</th>
               <th>Site</th>
-              <th>presentation projet</th>
-              <th>opportunite</th>
-              <th>composantes_projet</th>
+              <th>Présentation</th>
+              <th>Opportunité</th>
+              <th>Composantes</th>
               <th>Coût estimatif</th>
               <th>Date de création</th>
               <th>Actions</th>
@@ -30,7 +30,7 @@ const ProjetList = ({ projets, rubriques, openModal, handleOpenPlanningModal, ha
           <tbody>
             {projets.map((projet) => (
               <tr key={projet.id}>
-                 <td>{projet.intitule}</td>
+                <td>{projet.intitule}</td>
                 <td>{projet.type_investissement}</td>
                 <td>{projet.site}</td>
                 <td>{projet.presentation_projet}</td>
@@ -40,15 +40,16 @@ const ProjetList = ({ projets, rubriques, openModal, handleOpenPlanningModal, ha
                 <td>{new Date(projet.date_creation).toLocaleDateString()}</td>
                 <td>
                   <div className="d-flex gap-2">
-                    {projet.planning === 'Annuel' && (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleOpenPlanningModal(projet.id)}
-                      >
-                        Ajouter Planning
-                      </Button>
-                    )}
+                    {/* Bouton toujours visible mais désactivé si pas 'Annuel' */}
+                    <Button
+                      variant={projet.planning === 'Annuel' ? 'primary' : 'secondary'}
+                      size="sm"
+                      onClick={() => handleOpenPlanningModal(projet.id)}
+                      disabled={projet.planning !== 'Annuel'}
+                      title={projet.planning !== 'Annuel' ? "Planning non annuel" : ""}
+                    >
+                      Ajouter Planning
+                    </Button>
                     <Button
                       variant="info"
                       size="sm"

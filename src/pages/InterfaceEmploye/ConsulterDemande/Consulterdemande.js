@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Spinner, Alert, Button, Modal, Form } from 'react-bootstrap';
-import '../ConsulterDemande/ConsulterDemande.css'; // Importez le fichier CSS
-
+import '../ConsulterDemande/ConsulterDemande.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme prop
+const ConsulterDemande = ({ isSidebarOpen }) => {
   const [demandes, setDemandes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false); // État pour gérer l'affichage du modal
-  const [selectedDemande, setSelectedDemande] = useState(null); // État pour stocker la demande à modifier
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDemande, setSelectedDemande] = useState(null);
 
-  // Styles dynamiques pour la marge gauche
   const containerStyle = {
-    marginLeft: isSidebarOpen ? '250px' : '78px', // Ajustez la marge gauche
+    marginLeft: isSidebarOpen ? '250px' : '78px',
     padding: '20px',
-    transition: 'margin-left 0.5s ease', // Transition fluide
+    transition: 'margin-left 0.5s ease',
   };
 
   useEffect(() => {
@@ -68,7 +65,6 @@ const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme
         throw new Error('Erreur lors de la suppression de la demande d\'achat');
       }
 
-      // Mettre à jour l'état local après suppression
       setDemandes(demandes.filter(demande => demande.id !== id));
     } catch (err) {
       setError(err.message);
@@ -76,13 +72,13 @@ const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme
   };
 
   const handleEdit = (demande) => {
-    setSelectedDemande(demande); // Stocker la demande sélectionnée
-    setShowModal(true); // Ouvrir le modal
+    setSelectedDemande(demande);
+    setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // Fermer le modal
-    setSelectedDemande(null); // Réinitialiser la demande sélectionnée
+    setShowModal(false);
+    setSelectedDemande(null);
   };
 
   const handleSaveChanges = async () => {
@@ -105,12 +101,13 @@ const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme
         throw new Error('Erreur lors de la modification de la demande d\'achat');
       }
 
-      // Mettre à jour l'état local après modification
+      const updatedDemande = await response.json(); // On récupère la version modifiée
+
       setDemandes(demandes.map(demande =>
-        demande.id === selectedDemande.id ? selectedDemande : demande
+        demande.id === updatedDemande.id ? updatedDemande : demande
       ));
 
-      handleCloseModal(); // Fermer le modal après la modification
+      handleCloseModal();
     } catch (err) {
       setError(err.message);
     }
@@ -150,14 +147,14 @@ const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme
       <Table striped bordered hover responsive className="custom-table">
         <thead>
           <tr>
-            <th scope="col">Projet</th>
-            <th scope="col">Description</th>
-            <th scope="col">Quantite</th>
-            <th scope="col">Budget</th>
-            <th scope="col">Caracteristiques Techniques</th>
+            <th>Projet</th>
+            <th>Description</th>
+            <th>Quantité</th>
+            <th>Budget</th>
+            <th>Caractéristiques Techniques</th>
             <th>Motif de Refus</th>
-            <th scope="col">Statut</th>
-            <th scope="col">Actions</th>
+            <th>Statut</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -168,27 +165,26 @@ const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme
               <td>{demande.quantite}</td>
               <td>{demande.budget}</td>
               <td>{demande.caracteristique_tech}</td>
-              <td>{demande.motif_refus || 'N/A'}</td>
-              <td>{demande.statut}</td>
+              <td>{demande.validateur2_motif || 'N/A'}</td>
+              <td>{demande.statut_final}</td>
               <td>
-                {demande.statut === 'Approuvé' || demande.statut === 'Rejeté' ? (
-                  <span style={{ color: demande.statut === 'Approuvé' ? 'green' : 'red' }}>
-                    {demande.statut === 'Approuvé' ? 'Demande approuvée' : 'Demande rejetée'}
+                {demande.statut_final === 'Approuvé' || demande.statut_final === 'Rejeté' ? (
+                  <span style={{ color: demande.statut_final === 'Approuvé' ? 'green' : 'red' }}>
+                    {demande.statut_final === 'Approuvé' ? 'Demande approuvée' : 'Demande rejetée'}
                   </span>
                 ) : (
                   <>
-                    <Button variant="success" onClick={() => handleEdit(demande)}>Modifier</Button>{' '}
-                    <Button variant="danger" onClick={() => handleDelete(demande.id)}>Supprimer</Button>
+                    <Button variant="success" size="sm" onClick={() => handleEdit(demande)}>Modifier</Button>{' '}
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(demande.id)}>Supprimer</Button>
                   </>
                 )}
               </td>
-
             </tr>
           ))}
         </tbody>
       </Table>
 
-      {/* Modal pour modifier une demande */}
+      {/* Modal de modification */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Modifier la demande</Modal.Title>
@@ -205,7 +201,7 @@ const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme
                   onChange={handleChange}
                 />
               </Form.Group>
-              <Form.Group controlId="formQuantité">
+              <Form.Group controlId="formQuantite">
                 <Form.Label>Quantité</Form.Label>
                 <Form.Control
                   type="number"
@@ -223,13 +219,14 @@ const ConsulterDemande = ({ isSidebarOpen }) => { // Ajoutez isSidebarOpen comme
                   onChange={handleChange}
                 />
               </Form.Group>
-              <Form.Group controlId="formCaractéristiqueTech">
+              <Form.Group controlId="formCaracteristiqueTech">
                 <Form.Label>Caractéristiques Techniques</Form.Label>
                 <Form.Control
-                  type="textarea"
+                  as="textarea"
                   name="caracteristique_tech"
                   value={selectedDemande.caracteristique_tech}
                   onChange={handleChange}
+                  rows={3}
                 />
               </Form.Group>
             </Form>

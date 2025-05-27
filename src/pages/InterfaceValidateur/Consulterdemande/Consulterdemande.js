@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Table, Button, Modal, Form, Alert, Badge, Card, Spinner } from 'react-bootstrap';
 import { 
   fetchDemandesAValider, 
@@ -27,17 +27,24 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
     setIsLoading(true);
     try {
       const data = await fetchDemandesAValider();
-      setDemandes(data);
+      // Filtrer les demandes avec statut 'En attente' côté client si nécessaire
+      const filteredDemandes = data.filter(demande => 
+        demande.statut === 'En attente' || 
+        demande.statut === 'En validation 1'
+      );
+      setDemandes(filteredDemandes);
     } catch (error) {
       showAlert(error.message || 'Erreur lors du chargement des demandes', 'danger');
     } finally {
       setIsLoading(false);
     }
   };
-
+  
+  // Et dans le useEffect ou componentDidMount
   useEffect(() => {
     loadDemandes();
   }, []);
+ 
 
   const showAlert = (message, variant) => {
     setAlert({ show: true, message, variant });
@@ -157,7 +164,7 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
                   <td>{demande.projet_nom}</td>
                   <td>{demande.description}</td>
                   <td>{demande.quantite}</td>
-                  <td>{parseFloat(demande.budget).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</td>
+                  <td>{parseFloat(demande.budget).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} DT</td>
                   <td>{formatDate(demande.date_creation)}</td>
                   <td>{getStatusBadge(demande.statut)}</td>
                   <td className="text-center">

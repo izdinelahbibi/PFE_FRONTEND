@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import  Login  from './pages/Login'; 
+import ForgotPassword from './pages/ForgotPassword';
+
 import   Dashboard   from "./pages/InterfaceAdmin/Dashboard"; 
 import   EmployeDashboard   from "./pages/InterfaceEmploye/EmployeDashboard"; 
 import   ValidateurDashboard   from "./pages/InterfaceValidateur/ValidateurDashboard"; 
@@ -19,6 +21,7 @@ function App() {
           <Route path="/ValidateurDashboard" element={<ValidateurDashboard />} />
           <Route path="/Validateur2Dashboard" element={<Validateur2Dashboard />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </div>
     </Router>

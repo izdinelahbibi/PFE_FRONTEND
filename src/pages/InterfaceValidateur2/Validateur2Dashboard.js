@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-import Sidebar from './Sidebarv'; 
+import Sidebar from './Sidebarv';
 import Profil from './Profil/Profil';
+import Demandesvalide from './Demandevalide/Demandevalide';
 import Consulterdemande2 from './Consulterdemande2/Consulterdemande2';
+
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ValidateurDashboard = () => {
   const [activeComponent, setActiveComponent] = useState('welcome');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,13 +35,16 @@ const ValidateurDashboard = () => {
 
   const renderComponent = () => {
     switch (activeComponent) {
-        default:
-        case 'Consulterdemande2':
-            return <Consulterdemande2 isSidebarOpen={isSidebarOpen} />;
+      default:
+      case 'Consulterdemande2':
+        return <Consulterdemande2 isSidebarOpen={isSidebarOpen} />;
+      case 'Demandevalide':
+        return <Demandesvalide isSidebarOpen={isSidebarOpen} />;
+  
       case 'Profil':
         return <Profil isSidebarOpen={isSidebarOpen} />;
-      
-      
+
+
     }
   };
 

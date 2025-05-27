@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import ProjetList from '../../../components/ProjetListE';
 import AddProjetModal from '../../../components/AddProjetModal';
-import EditProjetModal from '../../../components/EditProjetModal'; // Nouveau composant
+import EditProjetModal from '../../../components/EditProjetModal';
 import {
   fetchUserInfo,
   fetchProjetsByDepartement,
   addProjet,
-  updateProjet, // Nouvelle fonction à ajouter dans le service
+  updateProjet,
   addPlanningAnnuel,
   fetchDepensesByProjet,
-  fetchRubriques
+  fetchRubriques,
+  fetchBudgetDetails
 } from '../../../services/ProjetService';
-import { Modal, Button, Table, Spinner, Alert, Form } from 'react-bootstrap';
+import { Modal, Button, Table, Spinner, Alert, Form, Card } from 'react-bootstrap';
 
 const Projet = ({ isSidebarOpen }) => {
   const [projets, setProjets] = useState([]);
@@ -19,11 +20,13 @@ const Projet = ({ isSidebarOpen }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // Nouvel état
-  const [currentProjet, setCurrentProjet] = useState(null); // Projet à modifier
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentProjet, setCurrentProjet] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showDepensesModal, setShowDepensesModal] = useState(false);
   const [depenses, setDepenses] = useState([]);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [budgetDetails, setBudgetDetails] = useState(null);
 
   const [planningData, setPlanningData] = useState({
     annee: new Date().getFullYear(),
@@ -188,10 +191,28 @@ const Projet = ({ isSidebarOpen }) => {
     }
   };
 
+  const handleShowBudget = async (projetId) => {
+    try {
+      const token = localStorage.getItem('userToken');
+      const details = await fetchBudgetDetails(token, projetId);
+      setBudgetDetails(details);
+      setShowBudgetModal(true);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   const handleCloseDepensesModal = () => {
     setShowDepensesModal(false);
     setDepenses([]);
   };
+
+  const handleCloseBudgetModal = () => {
+    setShowBudgetModal(false);
+    setBudgetDetails(null);
+  };
+
+  
 
   const renderPlanningForm = () => {
     if (newProjet.planning === 'Annuel') {
@@ -210,7 +231,7 @@ const Projet = ({ isSidebarOpen }) => {
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Dépense prévue (€)</Form.Label>
+            <Form.Label>Dépense prévue (DT)</Form.Label>
             <Form.Control
               type="number"
               name="depense"
@@ -255,6 +276,7 @@ const Projet = ({ isSidebarOpen }) => {
         openModal={openModal}
         openEditModal={openEditModal}
         handleShowDepenses={handleShowDepenses}
+        handleShowBudget={handleShowBudget}
       />
 
       <AddProjetModal
@@ -297,14 +319,14 @@ const Projet = ({ isSidebarOpen }) => {
               <thead>
                 <tr>
                   <th>Année</th>
-                  <th>Dépense (€)</th>
+                  <th>Dépense (DT)</th>
                 </tr>
               </thead>
               <tbody>
                 {depenses.map((depense, index) => (
                   <tr key={index}>
                     <td>{depense.annee}</td>
-                    <td>{depense.depense.toLocaleString('fr-FR')} €</td>
+                    <td>{depense.depense.toLocaleString('fr-FR')} DT</td>
                   </tr>
                 ))}
               </tbody>
@@ -315,6 +337,71 @@ const Projet = ({ isSidebarOpen }) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDepensesModal}>
+            Fermer
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showBudgetModal} onHide={handleCloseBudgetModal} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Détails budgétaires</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {budgetDetails ? (
+            <div className="budget-details">
+              <Card className="mb-3">
+                <Card.Header>Budget global</Card.Header>
+                <Card.Body>
+                  <Table striped bordered>
+                    <tbody>
+                      <tr>
+                        <td><strong>Budget total du projet</strong></td>
+                        <td>{budgetDetails.budgetProjet?.toLocaleString('fr-FR')} DT</td>
+                      </tr>
+                  
+                      <tr>
+                        <td><strong>Dépenses engagées</strong></td>
+                        <td>{budgetDetails.depensesEngagees?.toLocaleString('fr-FR')} DT</td>
+                      </tr>
+                      
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+
+              <Card>
+                <Card.Header>Détail par année</Card.Header>
+                <Card.Body>
+                  <Table striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>Année</th>
+                        <th>Budget</th>
+                       
+                        <th>Reste</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {budgetDetails.detailsAnnuels?.map((detail, index) => (
+                        <tr key={index}>
+                          <td>{detail.annee}</td>
+                          <td>{detail.budget?.toLocaleString('fr-FR')} DT</td>
+                          <td className={detail.reste < 0 ? 'text-danger' : ''}>
+                            {detail.reste?.toLocaleString('fr-FR')} DT
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+            </div>
+          ) : (
+            <Spinner animation="border" />
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseBudgetModal}>
             Fermer
           </Button>
         </Modal.Footer>

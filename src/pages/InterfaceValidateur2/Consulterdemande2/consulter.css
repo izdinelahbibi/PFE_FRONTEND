@@ -1,0 +1,256 @@
+/* styles.css */
+
+/* Container principal */
+.validator-container {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  /* En-tête */
+  .validator-container h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .validator-container h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: #3498db;
+  }
+  
+  /* Onglets personnalisés */
+  .custom-tabs .nav-link {
+    color: #7f8c8d;
+    font-weight: 500;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-tabs .nav-link:hover {
+    color: #3498db;
+    background-color: rgba(52, 152, 219, 0.1);
+  }
+  
+  .custom-tabs .nav-link.active {
+    color: #3498db;
+    background-color: transparent;
+    border-bottom: 3px solid #3498db;
+  }
+  
+  /* Cartes de demandes */
+  .demande-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .demande-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .demande-card .card-header {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+  }
+  
+  .demande-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  .demande-card .card-title {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .demande-card .card-text {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+  }
+  
+  .demande-card .card-footer {
+    padding: 1rem 1.5rem;
+  }
+  
+  /* Barre de progression de validation */
+  .validation-progress {
+    background-color: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #eee;
+  }
+  
+  /* Tableau */
+  .table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .table thead th {
+    background-color: #3498db;
+    color: white;
+    font-weight: 500;
+    border: none;
+    padding: 0.75rem 1rem;
+  }
+  
+  .table tbody td {
+    vertical-align: middle;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #eee;
+  }
+  
+  /* Badges */
+  .badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    letter-spacing: 0.5px;
+  }
+  
+  
+  /* Options de décision */
+  .decision-options .btn {
+    flex: 1;
+    padding: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Détails de la demande */
+  .detail-section-title {
+    color: #3498db;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .detail-item {
+    display: flex;
+    margin-bottom: 0.75rem;
+  }
+  
+  .detail-label {
+    font-weight: 500;
+    color: #7f8c8d;
+    width: 120px;
+    flex-shrink: 0;
+  }
+  
+  .detail-value {
+    color: #2c3e50;
+    flex-grow: 1;
+  }
+  
+  /* Timeline de validation */
+  .timeline {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #eee;
+  }
+  
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  .timeline-point {
+    position: absolute;
+    left: -1.5rem;
+    top: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #3498db;
+    border: 3px solid white;
+    z-index: 1;
+  }
+  
+  .timeline-content {
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+  }
+  
+  .timeline-note {
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border-left: 3px solid #3498db;
+  }
+  
+  /* État vide */
+  .text-center.py-5 {
+    color: #7f8c8d;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .validator-container {
+      padding: 1rem;
+    }
+    
+    .detail-item {
+      flex-direction: column;
+    }
+    
+    .detail-label {
+      width: 100%;
+      margin-bottom: 0.25rem;
+    }
+    
+    .demande-card .card-footer .btn {
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+    
+    .decision-options {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .demande-card {
+    animation: fadeIn 0.3s ease forwards;
+  }
+  
+  /* Priorités */
+  .bg-danger { background-color: #e74c3c !important; }
+  .bg-warning { background-color: #f39c12 !important; }
+  .bg-success { background-color: #2ecc71 !important; }
+  .bg-secondary { background-color: #95a5a6 !important; }
+  .bg-info { background-color: #1abc9c !important; }
