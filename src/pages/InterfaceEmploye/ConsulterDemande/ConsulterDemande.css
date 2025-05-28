@@ -1,162 +1,232 @@
-/* ConsulterDemande.css */
+:root {
+  --primary-color: #4f46e5; /* Indigo for primary buttons and accents */
+  --secondary-color: #6b7280; /* Gray for secondary elements */
+  --danger-color: #dc2626; /* Red for delete buttons */
+  --success-color: #16a34a; /* Green for success states */
+  --background-color: #f9fafb; /* Light background */
+  --card-background: #ffffff; /* White for cards and modals */
+  --text-color: #1f2937; /* Dark gray for text */
+  --border-radius: 8px;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
 
-/* Style global pour le conteneur */
-.container-custom {
-    margin-top: 80px; /* Ajustez en fonction de la hauteur de votre Navbar */
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: margin-left 0.5s ease; /* Transition fluide pour la marge gauche */
-  }
-  
-  /* Style pour le titre */
-  h2.text-center {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Style pour la table */
+body {
+  background-color: var(--background-color);
+  font-family: 'Inter', sans-serif; /* Modern, clean font */
+  color: var(--text-color);
+}
+
+.custom-table {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.custom-table thead {
+  background: linear-gradient(90deg, var(--primary-color), #818cf8);
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 15px;
+  vertical-align: middle;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.custom-table tbody tr {
+  transition: var(--transition);
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f1f5f9;
+  transform: translateY(-2px);
+}
+
+.custom-table .btn {
+  border-radius: var(--border-radius);
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.custom-table .btn-success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.custom-table .btn-success:hover {
+  background-color: #15803d;
+  transform: scale(1.05);
+}
+
+.custom-table .btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.custom-table .btn-danger:hover {
+  background-color: #b91c1c;
+  transform: scale(1.05);
+}
+
+h2 {
+  font-weight: 700;
+  color: var(--primary-color);
+  background: linear-gradient(to right, var(--primary-color), var(--text-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  animation: fadeIn 1s ease-in;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-control, .form-select {
+  border-radius: var(--border-radius);
+  border: 1px solid #d1d5db;
+  padding: 10px;
+  transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  outline: none;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.custom-spinner {
+  width: 3rem;
+  height: 3rem;
+  border-width: 4px;
+  border-color: var(--primary-color) transparent;
+  animation: spin 1s linear infinite;
+}
+
+.custom-alert {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  font-weight: 500;
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Modal Styling */
+.modal-content {
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--shadow);
+  background-color: var(--card-background);
+}
+
+.modal-header {
+  background: linear-gradient(90deg, var(--primary-color), #818cf8);
+  color: #ffffff;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+.modal-title {
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  border-top: none;
+  padding: 15px 20px;
+}
+
+.modal-footer .btn {
+  border-radius: var(--border-radius);
+  padding: 10px 20px;
+  font-weight: 500;
+}
+
+.modal-footer .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #4338ca;
+  transform: scale(1.05);
+}
+
+.modal-footer .btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #4b5563;
+  transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .custom-table {
-    background-color: #ffffff;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    font-size: 0.9rem;
   }
-  
-  .custom-table thead {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: #ffffff;
-  }
-  
+
   .custom-table th,
   .custom-table td {
-    padding: 15px;
-    text-align: center;
-    vertical-align: middle;
-  }
-  
-  .custom-table tbody tr {
-    transition: all 0.3s ease;
-  }
-  
-  .custom-table tbody tr:hover {
-    background-color: #f1f3f5;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Style pour les boutons */
-  .btn-custom {
-    border-radius: 25px;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn-warning {
-    background-color: #ffc107;
-    border: none;
-    color: #2c3e50;
-  }
-  
-  .btn-warning:hover {
-    background-color: #e0a800;
-    transform: translateY(-2px);
-  }
-  
-  .btn-danger {
-    background-color: #dc3545;
-    border: none;
-    color: #ffffff;
-  }
-  
-  .btn-danger:hover {
-    background-color: #c82333;
-    transform: translateY(-2px);
-  }
-  
-  /* Style pour le modal */
-  .modal-content {
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
-  
-
-  
-  .modal-title {
-    font-weight: bold;
-  }
-  
-  .modal-body {
-    padding: 20px;
-  }
-  
-  .modal-footer {
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-  }
-  
-  /* Style pour les formulaires dans le modal */
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  .form-control {
-    border-radius: 10px;
-    border: 1px solid #ced4da;
     padding: 10px;
-    transition: all 0.3s ease;
   }
-  
-  .form-control:focus {
-    border-color: #004f83;
-    box-shadow: 0 0 8px rgba(106, 17, 203, 0.2);
+
+  h2 {
+    font-size: 1.5rem;
   }
-  
-  /* Style pour le spinner de chargement */
-  .custom-spinner {
-    width: 3rem;
-    height: 3rem;
-    border-width: 0.3em;
-    color: #6a11cb;
+
+  .form-control, .form-select {
+    font-size: 0.9rem;
+    padding: 8px;
   }
-  
-  /* Style pour les alertes d'erreur */
-  .custom-alert {
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 576px) {
+  .custom-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  
-  /* Animation pour les boutons */
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-    }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
   }
-  
-  .btn-primary {
-    animation: pulse 2s infinite;
-  }
-  
-  /* Effet de survol pour les boutons du modal */
-  .modal-footer .btn-primary:hover {
-    background-color: #2575fc;
-    transform: translateY(-2px);
-  }
-  
-  /* Style pour les icônes dans les boutons */
-  .btn i {
-    margin-right: 5px;
-  }
+}

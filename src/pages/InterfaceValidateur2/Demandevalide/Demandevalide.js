@@ -76,8 +76,8 @@ const Demandesvalide = ({ isSidebarOpen }) => {
       startY: 55,
       head: [['Matériel', 'Quantité', 'Prix Utilitaire DTHTVA', 'Prix Total DTHTVA']],
       body: [
-        [demande.description|| 'N/A', demande.quantite || '0', demande.budget || '0.000', (demande.quantite * demande.budget || 0).toFixed(3)],
-        ['Total', '', '', (demande.quantite * demande.budget || 0).toFixed(3)]
+        [demande.description|| 'N/A', demande.quantite || '0', demande.budget || '0.000 ', (demande.quantite * demande.budget || 0).toFixed(3)],
+        ['Total', '', ''  , (demande.quantite * demande.budget || 0).toFixed(3)]
       ],
       styles: {
         fontSize: 10,

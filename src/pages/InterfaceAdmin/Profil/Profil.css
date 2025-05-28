@@ -1,179 +1,249 @@
-/* Ajoutez ces styles dans un fichier CSS séparé ou dans un style inline */
-
+/* General container styling with a modern gradient background */
 .profile-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .profile-header h2 {
-    font-size: 2rem;
-    color: #333;
-  }
-  
-  .profile-card {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-card p {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 10px;
-  }
-  
-  .profile-card strong {
-    color: #333;
-  }
-  
-  .profile-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .profile-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .modal-content {
-    border-radius: 15px;
-  }
-  
-  .modal-header {
-    background-color: #007bff;
-    color: #fff;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-  }
-  
-  .modal-title {
-    font-size: 1.5rem;
-  }
-  
-  .modal-body {
-    padding: 20px;
-  }
-  
-  .modal-footer {
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  min-height: 500px;
+}
+
+/* Header styling with modern typography */
+.profile-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.profile-header h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a3c6c;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+
+.profile-header h2::after {
+  content: '';
+  width: 60px;
+  height: 4px;
+  background: #007bff;
+  display: block;
+  margin: 0.5rem auto;
+  border-radius: 2px;
+}
+
+/* Profile card with subtle hover effect */
+.profile-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Photo section styling with circular placeholder */
+.profile-photo-section {
+  margin-bottom: 1.5rem;
+}
+
+.profile-photo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 4px solid #007bff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.profile-photo:hover {
+  transform: scale(1.05);
+}
+
+.profile-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #007bff 0%, #00c4b4 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile info styling with clean layout */
+.profile-info {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 1.5rem;
+}
+
+.profile-info p {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.profile-info p:hover {
+  background: #e9ecef;
+}
+
+.profile-info strong {
+  color: #1a3c6c;
+  font-weight: 600;
+}
+
+/* Action buttons with modern styling */
+.profile-actions {
+  text-align: center;
+}
+
+.profile-button {
+  background: linear-gradient(90deg, #007bff 0%, #00c4b4 100%);
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.profile-button:hover {
+  background: linear-gradient(90deg, #0056b3 0%, #009e8c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal styling with smooth animations */
+.modal-header {
+  background: #1a3c6c;
+  color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.modal-header .modal-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+}
+
+.modal-body {
+  padding: 2rem;
+  background: #f8f9fa;
+}
+
+.modal-footer {
+  border-top: none;
+  padding: 1rem 2rem;
+  background: #f8f9fa;
+}
+
+.modal-footer .btn-secondary {
+  background: #6c757d;
+  border: none;
+  border-radius: 50px;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.modal-footer .btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+}
+
+.modal-footer .btn-primary {
+  background: linear-gradient(90deg, #007bff 0%, #00c4b4 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.modal-footer .btn-primary:hover {
+  background: linear-gradient(90deg, #0056b3 0%, #009e8c 100%);
+  transform: translateY(-2px);
+}
+
+/* Form styling with modern input fields */
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 0.75rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.form-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #1a3c6c;
+}
+
+.form-text {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Spinner styling */
+.text-center .spinner-border {
+  color: #007bff;
+}
+
+/* Responsive design */
+@media (max-width: 576px) {
+  .profile-container {
+    padding: 1rem;
+    margin: 1rem;
   }
 
-  .profile-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #343a40;
-  }
-  
   .profile-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
   }
-  
-  .profile-photo-section {
-    margin-bottom: 1.5rem;
-    text-align: center;
+
+  .profile-photo, .profile-photo-placeholder {
+    width: 100px;
+    height: 100px;
   }
-  
-  .profile-photo {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #dee2e6;
-  }
-  
-  .profile-photo-placeholder {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background-color: #6c757d;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    border: 3px solid #dee2e6;
-  }
-  
-  .profile-info {
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-  
+
   .profile-info p {
-    margin-bottom: 0.8rem;
     font-size: 1rem;
     padding: 0.5rem;
-    border-bottom: 1px solid #eee;
   }
-  
-  .profile-info strong {
-    color: #495057;
-    min-width: 120px;
-    display: inline-block;
-  }
-  
-  .profile-actions {
-    width: 100%;
-    text-align: center;
-  }
-  
+
   .profile-button {
-    padding: 0.5rem 2rem;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
   }
-  
-  .modal-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-  }
-  
-  .modal-footer {
-    border-top: 1px solid #dee2e6;
-  }
-  
-  @media (max-width: 768px) {
-    .profile-container {
-      padding: 15px;
-      margin: 1rem;
-    }
-    
-    .profile-card {
-      padding: 1rem;
-    }
-    
-    .profile-photo, .profile-photo-placeholder {
-      width: 120px;
-      height: 120px;
-    }
-  }
+}

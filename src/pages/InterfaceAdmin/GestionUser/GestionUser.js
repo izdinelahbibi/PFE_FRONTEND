@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import { Button, FormControl, InputGroup } from "react-bootstrap";
 import UserForm from "../../../components/UserForm";
 import UserTable from "../../../components/UserTable";
-
-
 import { fetchUsers, createUser, updateUser, deleteUser } from "../../../services/userService";
 
 const GestionUser = ({ isSidebarOpen }) => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [error, setError] = useState(null);
   const [nextMatricule, setNextMatricule] = useState(1001);
+  const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -29,6 +29,7 @@ const GestionUser = ({ isSidebarOpen }) => {
       try {
         const data = await fetchUsers();
         setUsers(data);
+        setFilteredUsers(data);
         
         if (data.length > 0) {
           const maxMatricule = Math.max(...data.map(user => parseInt(user.matricule) || 0));
@@ -43,6 +44,26 @@ const GestionUser = ({ isSidebarOpen }) => {
     };
     loadUsers();
   }, []);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter(user => 
+        user.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.matricule.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.cin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [searchTerm, users]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -165,9 +186,23 @@ const GestionUser = ({ isSidebarOpen }) => {
       <h2 className="mb-4">Gestion des Utilisateurs</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       
-      <Button variant="primary" className="mb-3" onClick={() => { resetForm(); setShowForm(true); }}>
-        + Ajouter un Utilisateur
-      </Button>
+      <div className="d-flex justify-content-between mb-3">
+        <Button variant="primary" onClick={() => { resetForm(); setShowForm(true); }}>
+          + Ajouter un Utilisateur
+        </Button>
+        
+        <InputGroup style={{ width: '300px' }}>
+          <FormControl
+            placeholder="Rechercher un utilisateur..."
+            aria-label="Rechercher"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <InputGroup.Text>
+            <i className="bi bi-search"></i>
+          </InputGroup.Text>
+        </InputGroup>
+      </div>
 
       <UserForm 
         showForm={showForm} 
@@ -179,7 +214,7 @@ const GestionUser = ({ isSidebarOpen }) => {
         isNewUser={!editingUser}
       />
 
-      <UserTable users={users} handleEdit={handleEdit} handleDelete={handleDelete} />
+      <UserTable users={filteredUsers} handleEdit={handleEdit} handleDelete={handleDelete} />
     </div>
   );
 };

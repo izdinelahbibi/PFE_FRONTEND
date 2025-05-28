@@ -88,9 +88,9 @@ const Sidebar = ({ setActiveComponent, setIsSidebarOpen, onLogout }) => {
         <li onClick={() => setActiveComponent("Notification")}>
           <button className="link-button">
             <i className="bx bxs-bell-ring"></i>
-            <span className="link_name">Problem Notification</span>
+            <span className="link_name">Notification problème</span>
           </button>
-          <span className="tooltip">Problem Notification</span>
+          <span className="tooltip">Notification  problème</span>
         </li>
 
 

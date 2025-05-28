@@ -10,6 +10,7 @@ const ForgotPassword = () => {
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,8 +20,11 @@ const ForgotPassword = () => {
 
     try {
       await sendPasswordRequest(email, description);
-      alert('Demande enregistrée avec succès auprès de l\'administrateur.');
-      navigate('/login');
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate('/login');
+      }, 3000); // Hide success message after 3 seconds and redirect
     } catch (err) {
       setError(err.message || 'Erreur lors de l\'envoi');
     } finally {
@@ -88,6 +92,23 @@ const ForgotPassword = () => {
           </Card.Body>
         </Card>
       </motion.div>
+
+      {showSuccess && (
+        <motion.div
+          className="success-overlay"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="success-message">
+            <div className="success-icon">✔</div>
+            <h4>Demande envoyée avec succès !</h4>
+            <p>Votre demande a été enregistrée auprès de l'administrateur.</p>
+            <p>Vous serez redirigé vers la page de connexion...</p>
+          </div>
+        </motion.div>
+      )}
     </Container>
   );
 };

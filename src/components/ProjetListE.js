@@ -1,33 +1,74 @@
 import React, { useState } from 'react';
-import { Table, Button, Pagination } from 'react-bootstrap';
-import { Eye, Pencil, Calculator } from 'react-bootstrap-icons';
-
+import { Table, Button, Pagination, Modal, Form } from 'react-bootstrap';
+import { Eye, Pencil, Calculator, FileEarmarkArrowDown } from 'react-bootstrap-icons';
 import './ProjetList.css';
 
-const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDepenses, handleShowBudget }) => {
+const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDepenses, handleShowBudget, handleExportProject }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedProjet, setSelectedProjet] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const itemsPerPage = 10;
 
   const getRubriqueName = (rubriqueId) => {
     if (!rubriqueId) return 'Non spécifié';
-    const rubrique = rubriques.find(r => r.id === rubriqueId);
+    const rubrique = rubriques.find((r) => r.id === rubriqueId);
     return rubrique ? rubrique.nom : 'Non spécifié';
   };
 
+  const openDetailsModal = (projet) => {
+    setSelectedProjet(projet);
+    setShowDetailsModal(true);
+  };
+
+  const closeDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedProjet(null);
+  };
+
+  // Filter projects based on search term
+  const filteredProjets = projets.filter((projet) =>
+    projet.intitule.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getRubriqueName(projet.rubrique_id).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjets = projets.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(projets.length / itemsPerPage);
+  const currentProjets = filteredProjets.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredProjets.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="projet-list-container">
-      <Button onClick={openModal} variant="success" className="add-projet-button mb-3">
-        + Ajouter un projet
-      </Button>
+      {/* Filtering Zone (only search input and add button) */}
+      <div className="filter-zone mb-3">
+        <Form>
+          <div className="d-flex gap-3 flex-wrap align-items-end">
+            <Form.Group style={{ width: '300px' }}>
+              <Form.Label>Rechercher (Intitulé/Rubrique)</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Rechercher un projet..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1); // Reset to first page on filter change
+                }}
+              />
+            </Form.Group>
+            <Button
+              onClick={openModal}
+              variant="success"
+              className="add-projet-button"
+            >
+              + Ajouter un projet
+            </Button>
+          </div>
+        </Form>
+      </div>
 
-      {projets.length === 0 ? (
+      {filteredProjets.length === 0 ? (
         <div className="alert alert-info">Aucun projet trouvé</div>
       ) : (
         <>
@@ -36,11 +77,6 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
               <tr>
                 <th>Intitulé</th>
                 <th>Rubrique</th>
-                <th>Type d'investissement</th>
-                <th>Site</th>
-                <th>Présentation Projet</th>
-                <th>Opportunité</th>
-                <th>composantes Projet</th>
                 <th>Coût estimatif</th>
                 <th>Date de création</th>
                 <th>Actions</th>
@@ -49,17 +85,22 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
             <tbody>
               {currentProjets.map((projet) => (
                 <tr key={projet.id}>
-                  <td>{projet.intitule}</td>
-                  <td>{getRubriqueName(projet.rubrique_id)}</td>
-                  <td>{projet.type_investissement}</td>
-                  <td>{projet.site}</td>
-                  <td>{projet.presentation_projet}</td>
-                  <td>{projet.opportunite}</td>
-                  <td>{projet.composantes_projet}</td>
-                  <td>{projet.cout_estimatif ? `${projet.cout_estimatif} DT` : 'Non spécifié'}</td>
-                  <td>{new Date(projet.date_creation).toLocaleDateString()}</td>
-                  <td>
+                  <td className="truncate" data-label="Intitulé">{projet.intitule}</td>
+                  <td className="truncate" data-label="Rubrique">{getRubriqueName(projet.rubrique_id)}</td>
+                  <td data-label="Coût estimatif">
+                    {projet.cout_estimatif ? `${projet.cout_estimatif} DT` : 'Non spécifié'}
+                  </td>
+                  <td data-label="Date de création">{new Date(projet.date_creation).toLocaleDateString()}</td>
+                  <td data-label="Actions">
                     <div className="d-flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => openDetailsModal(projet)}
+                        title="Voir les détails"
+                      >
+                        Détails
+                      </Button>
                       <Button
                         variant="info"
                         size="sm"
@@ -67,7 +108,6 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
                         title="Voir les dépenses"
                       >
                         <Eye className="me-1" />
-                        Dépenses
                       </Button>
                       <Button
                         variant="primary"
@@ -75,8 +115,8 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
                         onClick={() => handleShowBudget(projet.id)}
                         title="Détail budgétaire"
                       >
-                        <Calculator className="me-1" />
-                        Detail Budgétaire
+                        <Calculator className="me-1" /> 
+                      
                       </Button>
                       <Button
                         variant="warning"
@@ -85,9 +125,15 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
                         title="Modifier le projet"
                       >
                         <Pencil className="me-1" />
-                        Modifier
                       </Button>
-                      
+                      <Button
+                        variant="success"
+                        size="sm"
+                        onClick={() => handleExportProject(projet)}
+                        title="Exporter la fiche de projet"
+                      >
+                        <FileEarmarkArrowDown className="me-1" />
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -107,6 +153,30 @@ const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDe
             ))}
           </Pagination>
         </>
+      )}
+
+      {/* Details Modal */}
+      {selectedProjet && (
+        <Modal show={showDetailsModal} onHide={closeDetailsModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Détails du Projet: {selectedProjet.intitule}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p><strong>Rubrique:</strong> {getRubriqueName(selectedProjet.rubrique_id)}</p>
+            <p><strong>Type d'investissement:</strong> {selectedProjet.type_investissement}</p>
+            <p><strong>Site:</strong> {selectedProjet.site}</p>
+            <p><strong>Présentation Projet:</strong> {selectedProjet.presentation_projet}</p>
+            <p><strong>Opportunité:</strong> {selectedProjet.opportunite}</p>
+            <p><strong>Composantes Projet:</strong> {selectedProjet.composantes_projet}</p>
+            <p><strong>Coût estimatif:</strong> {selectedProjet.cout_estimatif ? `${selectedProjet.cout_estimatif} DT` : 'Non spécifié'}</p>
+            <p><strong>Date de création:</strong> {new Date(selectedProjet.date_creation).toLocaleDateString()}</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={closeDetailsModal}>
+              Fermer
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
     </div>
   );

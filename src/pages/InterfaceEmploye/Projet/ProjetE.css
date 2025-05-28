@@ -1,0 +1,27 @@
+.add-projet-button {
+  display: flex;
+  justify-content: flex-end; /* Aligns button to the right */
+  margin-bottom: 3px; /* Space below the button */
+  padding: 0 20px; /* Horizontal padding for alignment with container */
+}
+
+.add-projet-button button {
+  background-color: #007bff; /* Bootstrap primary color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-projet-button button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+.add-projet-button button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3); /* Bootstrap focus style */
+}

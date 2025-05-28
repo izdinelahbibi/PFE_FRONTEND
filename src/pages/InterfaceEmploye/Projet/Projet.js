@@ -10,9 +10,11 @@ import {
   addPlanningAnnuel,
   fetchDepensesByProjet,
   fetchRubriques,
-  fetchBudgetDetails
+  fetchBudgetDetails,
 } from '../../../services/ProjetService';
 import { Modal, Button, Table, Spinner, Alert, Form, Card } from 'react-bootstrap';
+import { jsPDF } from 'jspdf';
+import './ProjetE.css';
 
 const Projet = ({ isSidebarOpen }) => {
   const [projets, setProjets] = useState([]);
@@ -202,6 +204,75 @@ const Projet = ({ isSidebarOpen }) => {
     }
   };
 
+  const handleExportProject = async (projet) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    let yPosition = margin;
+
+
+
+    // Set font to Times for a professional look
+    doc.setFont('times', 'bold');
+
+    // Main Title
+    doc.setFontSize(16);
+    const mainTitle = 'MISE A NIVEAU DES INFRASTRUCTURES DE COMMUNICATION';
+    const mainTitleWidth = doc.getTextWidth(mainTitle);
+    doc.text(mainTitle, (pageWidth - mainTitleWidth) / 2, yPosition);
+    yPosition += 10;
+
+    // Project Sheet Title
+    doc.setFontSize(14);
+    const projectTitle = 'FICHE DU PROJET';
+    const projectTitleWidth = doc.getTextWidth(projectTitle);
+    doc.text(projectTitle, (pageWidth - projectTitleWidth) / 2, yPosition);
+    yPosition += 10;
+
+    // Horizontal Line
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 10;
+
+    // Project Details Section (Inside a Bordered Box)
+    const detailsHeight = 110;
+    doc.setFont('times', 'normal');
+    doc.setDrawColor(0);
+    doc.rect(margin - 5, yPosition - 5, pageWidth - 2 * (margin - 5), detailsHeight);
+
+    doc.setFontSize(12);
+    const fields = [
+      { label: 'Intitulé :', value: projet.intitule || 'Non spécifié' },
+      { label: 'Type d\'investissement :', value: projet.type_investissement || 'Non spécifié' },
+      { label: 'Site :', value: projet.site || 'Non spécifié' },
+      { label: 'Présentation du projet :', value: projet.presentation_projet || 'Non spécifié' },
+      { label: 'Opportunité :', value: projet.opportunite || 'Non spécifié' },
+      { label: 'Composantes du projet :', value: projet.composantes_projet || 'Non spécifié' },
+      { label: 'Coût estimatif :', value: projet.cout_estimatif ? `${projet.cout_estimatif} mDT` : 'Non spécifié' },
+    ];
+
+    fields.forEach(field => {
+      doc.setFont('times', 'bold');
+      doc.text(field.label, margin, yPosition);
+      doc.setFont('times', 'normal');
+      const maxWidth = pageWidth - margin - 50; // Adjust based on your layout
+      const splitText = doc.splitTextToSize(field.value, maxWidth);
+      doc.text(splitText, margin + 40, yPosition);
+      yPosition += (splitText.length * 5) + 5; // Adjust spacing based on text lines
+    });
+
+    yPosition += 10;
+
+    // Date
+    doc.setFont('times', 'italic');
+    doc.setFontSize(10);
+    doc.text(`Août ${new Date().getFullYear()}`, margin, yPosition);
+
+    // Save the PDF
+    doc.save(`${projet.intitule}_fiche.pdf`);
+  };
+
   const handleCloseDepensesModal = () => {
     setShowDepensesModal(false);
     setDepenses([]);
@@ -211,8 +282,6 @@ const Projet = ({ isSidebarOpen }) => {
     setShowBudgetModal(false);
     setBudgetDetails(null);
   };
-
-  
 
   const renderPlanningForm = () => {
     if (newProjet.planning === 'Annuel') {
@@ -277,6 +346,7 @@ const Projet = ({ isSidebarOpen }) => {
         openEditModal={openEditModal}
         handleShowDepenses={handleShowDepenses}
         handleShowBudget={handleShowBudget}
+        handleExportProject={handleExportProject}
       />
 
       <AddProjetModal
@@ -358,12 +428,10 @@ const Projet = ({ isSidebarOpen }) => {
                         <td><strong>Budget total du projet</strong></td>
                         <td>{budgetDetails.budgetProjet?.toLocaleString('fr-FR')} DT</td>
                       </tr>
-                  
                       <tr>
                         <td><strong>Dépenses engagées</strong></td>
                         <td>{budgetDetails.depensesEngagees?.toLocaleString('fr-FR')} DT</td>
                       </tr>
-                      
                     </tbody>
                   </Table>
                 </Card.Body>
@@ -377,7 +445,6 @@ const Projet = ({ isSidebarOpen }) => {
                       <tr>
                         <th>Année</th>
                         <th>Budget</th>
-                       
                         <th>Reste</th>
                       </tr>
                     </thead>

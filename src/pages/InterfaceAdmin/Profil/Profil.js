@@ -11,7 +11,7 @@ const Profil = () => {
     email: '',
     role: '',
     Telephone: '',
-    photo: '', // Champ photo comme dans votre API
+    photo: '',
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -58,7 +58,7 @@ const Profil = () => {
         email: data.email || '',
         role: data.role || '',
         Telephone: data.Telephone || '',
-        photo: data.photo ? `${process.env.REACT_APP_API_URL}/${data.photo}` : '', // Construction de l'URL complète
+        photo: data.photo ? `${process.env.REACT_APP_API_URL}/${data.photo}` : '',
       });
     } catch (error) {
       console.error('Erreur:', error);
@@ -93,7 +93,6 @@ const Profil = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validation du fichier
       if (file.size > 2 * 1024 * 1024) {
         setMessage({ text: 'La taille du fichier ne doit pas dépasser 2MB', type: 'danger' });
         return;
@@ -106,7 +105,6 @@ const Profil = () => {
 
       setSelectedFile(file);
       
-      // Création de l'aperçu
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result);
@@ -138,7 +136,6 @@ const Profil = () => {
         throw new Error(data.message || 'Erreur lors du téléchargement de la photo');
       }
 
-      // Mise à jour de l'état avec la nouvelle photo
       setAdministrateur(prev => ({
         ...prev,
         photo: `${process.env.REACT_APP_API_URL}/${data.photo}`
@@ -165,7 +162,6 @@ const Profil = () => {
         return;
       }
 
-      // Envoi des données de profil
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/administrateur/profil`, {
         method: 'PUT',
         headers: {
@@ -185,7 +181,6 @@ const Profil = () => {
         throw new Error(data.message || 'Erreur lors de la mise à jour du profil');
       }
 
-      // Si une nouvelle photo a été sélectionnée, l'uploader
       if (selectedFile) {
         await uploadPhoto();
       }

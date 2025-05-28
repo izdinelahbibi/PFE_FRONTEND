@@ -90,6 +90,8 @@ const fetchDepensesByProjet = async (token, projetId) => {
   return response.json();
 };
 
+
+
 export const updateProjet = async (token, projetId, projetData) => {
   const response = await fetch(`${API_URL}/api/projet/${projetId}`, {
     method: 'PUT',
