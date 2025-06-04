@@ -28,17 +28,35 @@ const fetchProjetsByDepartement = async (token, departementId) => {
   return response.json();
 };
 
-export const fetchRubriques = async (token) => {
-  const response = await fetch(`${API_URL}/api/rubriques`, {
+const fetchRubriquesByDepartement = async (token, departementId) => {
+  console.log(`Fetching rubriques for departement ${departementId}`);
+  const response = await fetch(`${API_URL}/api/rubriques/departement/${departementId}`, {
     headers: {
       'Authorization': `Bearer ${token}`,
-    },
+      'Content-Type': 'application/json'
+    }
   });
   
+  const data = await response.json();
+  console.log('Received rubriques:', data);
+  return data;
+};
+
+export const updateProjetStatus = async (token, projetId, statut) => {
+  const response = await fetch(`/api/projets/${projetId}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ statut }),
+  });
+
   if (!response.ok) {
-    throw new Error('Erreur lors de la récupération des rubriques');
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Erreur lors de la mise à jour du statut du projet');
   }
-  
+
   return await response.json();
 };
 
@@ -125,9 +143,12 @@ export const fetchBudgetDetails = async (token, projetId) => {
   return response.json();
 };
 
+
+
 export { 
   fetchUserInfo, 
   fetchProjetsByDepartement,  
   addPlanningAnnuel, 
+  fetchRubriquesByDepartement,
   fetchDepensesByProjet 
 };

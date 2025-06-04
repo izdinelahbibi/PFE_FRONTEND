@@ -1,3 +1,4 @@
+// pages/GestionRubriqueAvecDepartement.js
 import React, { useState, useEffect } from 'react';
 import {
   fetchRubriques,
@@ -15,6 +16,7 @@ const GestionRubrique = ({ isSidebarOpen }) => {
   const [showModal, setShowModal] = useState(false);
   const [currentRubrique, setCurrentRubrique] = useState(null);
 
+  // Les fonctions existantes restent inchangées
   useEffect(() => {
     loadRubriques();
   }, []);
@@ -83,6 +85,7 @@ const GestionRubrique = ({ isSidebarOpen }) => {
               <tr>
                 <th>Nom</th>
                 <th>Description</th>
+                <th>Département</th>
                 <th>Date de création</th>
                 <th>Actions</th>
               </tr>
@@ -93,6 +96,7 @@ const GestionRubrique = ({ isSidebarOpen }) => {
                   <tr key={rubrique.id}>
                     <td>{rubrique.nom}</td>
                     <td>{rubrique.description || '-'}</td>
+                    <td>{rubrique.departement?.nom || 'Non attribué'}</td>
                     <td>{new Date(rubrique.date_creation).toLocaleDateString()}</td>
                     <td>
                       <button
@@ -101,13 +105,12 @@ const GestionRubrique = ({ isSidebarOpen }) => {
                       >
                         Modifier
                       </button>
-                    
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="no-data">
+                  <td colSpan="5" className="no-data">
                     Aucune rubrique trouvée
                   </td>
                 </tr>

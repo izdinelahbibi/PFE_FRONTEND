@@ -37,27 +37,27 @@ const Consulterdemande2 = ({ isSidebarOpen }) => {
   }, []);
 
   const fetchData = async () => {
-    try {
-      setLoading(true);
-      const demandesData = await getDemandesPourValidateur2();
-      
-      // Filtrer les demandes qui n'ont pas encore de décision de validateur2
-      const pending = demandesData.filter(d => 
-        d.statut === 'En validation 2' && 
-        !d.validateur2_decision
-      );
-      
-      const historiqueData = await getHistoriqueValidations();
-      
-      setDemandes(pending);
-      setHistorique(historiqueData);
-      setLoading(false);
-    } catch (err) {
-      setError(err.message || 'Erreur lors de la récupération des données');
-      setLoading(false);
-      toast.error(err.message || 'Erreur lors de la récupération des données');
-    }
-  };
+  try {
+    setLoading(true);
+    const demandesData = await getDemandesPourValidateur2();
+    
+    // Filtrer les demandes qui nécessitent une action du validateur 2
+    const pending = demandesData.filter(d => 
+      (d.statut === 'En validation 2' || d.validateur1_decision === 'Rejeté') && 
+      !d.validateur2_decision
+    );
+    
+    const historiqueData = await getHistoriqueValidations();
+    
+    setDemandes(pending);
+    setHistorique(historiqueData);
+    setLoading(false);
+  } catch (err) {
+    setError(err.message || 'Erreur lors de la récupération des données');
+    setLoading(false);
+    toast.error(err.message || 'Erreur lors de la récupération des données');
+  }
+};
 
   
   const handleDecision = (demande) => {
@@ -163,6 +163,8 @@ const Consulterdemande2 = ({ isSidebarOpen }) => {
   function renderPendingDemandes() {
     if (loading) {
       return (
+
+        
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Chargement en cours...</span>

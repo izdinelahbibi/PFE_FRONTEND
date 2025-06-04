@@ -230,3 +230,37 @@ h2 {
     font-size: 0.85rem;
   }
 }
+
+.custom-table .btn {
+  border-radius: var(--border-radius);
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Space for potential icons */
+  box-shadow: var(--shadow);
+  border: none; /* Remove default border for cleaner look */
+}
+
+/* Modifier Button (Success) */
+.custom-table .btn-success {
+  background-color: var(--success-color);
+  color: #ffffff;
+}
+
+.custom-table .btn-success:hover {
+  background-color: #15803d; /* Darker green on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+  box-shadow: 0 6px 12px rgba(22, 163, 74, 0.3); /* Enhanced shadow on hover */
+}
+
+/* Supprimer Button (Danger) */
+.custom-table .btn-danger {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}

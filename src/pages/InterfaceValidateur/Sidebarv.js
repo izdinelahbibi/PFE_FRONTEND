@@ -44,7 +44,13 @@ const Sidebar = ({ setActiveComponent, setIsSidebarOpen, onLogout }) => {
       </div>
       <ul className="nav-list">
       
-      
+      <li onClick={() => setActiveComponent('projet')}>
+          <button className="link-button">
+            <i className="bx bx-pie-chart-alt-2"></i>
+            <span className="link_name">Projets</span>
+          </button>
+          <span className="tooltip">Projets</span>
+        </li>
       
         <li onClick={() => setActiveComponent('consulterdemande')}>
           <button className="link-button">
@@ -62,13 +68,7 @@ const Sidebar = ({ setActiveComponent, setIsSidebarOpen, onLogout }) => {
           <span className="tooltip">Demande Validé</span>
         </li>
 
-        <li onClick={() => setActiveComponent('projet')}>
-          <button className="link-button">
-            <i className="bx bx-pie-chart-alt-2"></i>
-            <span className="link_name">Projets</span>
-          </button>
-          <span className="tooltip">Projets</span>
-        </li>
+        
 
 
         

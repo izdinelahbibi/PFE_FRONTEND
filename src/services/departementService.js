@@ -61,6 +61,7 @@ const updateDepartement = async (id, nom, description) => {
 };
 
 
+
 // Exportez les fonctions sous forme d'objet
 const departementService = {
   addDepartement,

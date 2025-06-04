@@ -1,9 +1,9 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
-import { Eye } from 'react-bootstrap-icons';
-import './ProjetList.css';
+import { Eye, InfoCircle } from 'react-bootstrap-icons';
+import './ProjetListE.css';
 
-const ProjetList = ({ projets, openModal, handleOpenPlanningModal, handleShowDepenses }) => {
+const ProjetList = ({ projets, openModal, handleOpenPlanningModal, handleShowDepenses, handleShowDetails }) => {
   return (
     <div className="projet-list-container">
       <Button onClick={openModal} variant="success" className="add-projet-button mb-3">
@@ -19,9 +19,6 @@ const ProjetList = ({ projets, openModal, handleOpenPlanningModal, handleShowDep
               <th>Intitulé</th>
               <th>Type d'investissement</th>
               <th>Site</th>
-              <th>Présentation</th>
-              <th>Opportunité</th>
-              <th>Composantes</th>
               <th>Coût estimatif</th>
               <th>Date de création</th>
               <th>Actions</th>
@@ -33,14 +30,10 @@ const ProjetList = ({ projets, openModal, handleOpenPlanningModal, handleShowDep
                 <td>{projet.intitule}</td>
                 <td>{projet.type_investissement}</td>
                 <td>{projet.site}</td>
-                <td>{projet.presentation_projet}</td>
-                <td>{projet.opportunite}</td>
-                <td>{projet.composantes_projet}</td>
                 <td>{projet.cout_estimatif ? `${projet.cout_estimatif} DT` : 'Non spécifié'}</td>
                 <td>{new Date(projet.date_creation).toLocaleDateString()}</td>
                 <td>
                   <div className="d-flex gap-2">
-                    {/* Bouton toujours visible mais désactivé si pas 'Annuel' */}
                     <Button
                       variant={projet.planning === 'Annuel' ? 'primary' : 'secondary'}
                       size="sm"
@@ -58,6 +51,15 @@ const ProjetList = ({ projets, openModal, handleOpenPlanningModal, handleShowDep
                     >
                       <Eye className="me-1" />
                       Dépenses
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => handleShowDetails(projet.id)}
+                      title="Voir les détails"
+                    >
+                      <InfoCircle className="me-1" />
+                      Détails
                     </Button>
                   </div>
                 </td>

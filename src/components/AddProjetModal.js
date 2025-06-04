@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { fetchRubriques } from '../services/rubriqueService';
 
 const AddProjetModal = ({ 
   isModalOpen, 
@@ -8,31 +7,9 @@ const AddProjetModal = ({
   handleSubmit, 
   handleInputChange, 
   newProjet,
+  rubriques,
 }) => {
-  const [rubriques, setRubriques] = useState([]);
-  const [loadingRubriques, setLoadingRubriques] = useState(false);
-  const [error, setError] = useState(null);
-  const [step, setStep] = useState(1); // 1: Sélection rubrique, 2: Formulaire projet
-
-  useEffect(() => {
-    if (isModalOpen) {
-      loadRubriques();
-    }
-  }, [isModalOpen]);
-
-  const loadRubriques = async () => {
-    try {
-      setLoadingRubriques(true);
-      const data = await fetchRubriques();
-      setRubriques(data);
-      setError(null);
-    } catch (err) {
-      setError('Erreur lors du chargement des rubriques');
-      console.error(err);
-    } finally {
-      setLoadingRubriques(false);
-    }
-  };
+  const [step, setStep] = useState(1);
 
   const handleRubriqueSelect = (rubriqueId) => {
     handleInputChange({
@@ -58,16 +35,8 @@ const AddProjetModal = ({
       <Modal.Body>
         {step === 1 ? (
           <div>
-            {loadingRubriques ? (
-              <div className="text-center my-4">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Chargement...</span>
-                </div>
-              </div>
-            ) : error ? (
-              <Alert variant="danger">{error}</Alert>
-            ) : rubriques.length === 0 ? (
-              <Alert variant="info">Aucune rubrique disponible</Alert>
+            {rubriques.length === 0 ? (
+              <Alert variant="info">Aucune rubrique disponible pour votre département</Alert>
             ) : (
               <div className="rubrique-selection-container">
                 <h5 className="mb-3">Veuillez sélectionner une rubrique :</h5>
@@ -194,20 +163,6 @@ const AddProjetModal = ({
                 step="0.01"
                 required
               />
-            </Form.Group>
-
-            <Form.Group controlId="formPlanning" className="mb-3">
-              <Form.Label>Planning:</Form.Label>
-              <Form.Control
-                as="select"
-                name="planning"
-                value={newProjet.planning}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="Annuel">Annuel</option>
-               
-              </Form.Control>
             </Form.Group>
 
             <Modal.Footer>

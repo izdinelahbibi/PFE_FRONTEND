@@ -9,10 +9,10 @@ import {
   updateProjet,
   addPlanningAnnuel,
   fetchDepensesByProjet,
-  fetchRubriques,
+  fetchRubriquesByDepartement,
   fetchBudgetDetails,
 } from '../../../services/ProjetService';
-import { Modal, Button, Table, Spinner, Alert, Form, Card } from 'react-bootstrap';
+import { Modal, Button, Table, Spinner, Form, Card } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
 import './ProjetE.css';
 
@@ -21,6 +21,7 @@ const Projet = ({ isSidebarOpen }) => {
   const [rubriques, setRubriques] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentProjet, setCurrentProjet] = useState(null);
@@ -59,16 +60,17 @@ const Projet = ({ isSidebarOpen }) => {
         const token = localStorage.getItem('userToken');
         if (!token) throw new Error('Utilisateur non connecté');
 
-        const rubriquesData = await fetchRubriques(token);
-        setRubriques(rubriquesData);
-
         const userData = await fetchUserInfo(token);
         const departementId = userData.departement_id;
+
+        const rubriquesData = await fetchRubriquesByDepartement(token, departementId);
+        setRubriques(rubriquesData);
 
         const projetsData = await fetchProjetsByDepartement(token, departementId);
         setProjets(projetsData);
       } catch (err) {
         setError(err.message);
+        setShowErrorModal(true);
       } finally {
         setLoading(false);
       }
@@ -116,6 +118,8 @@ const Projet = ({ isSidebarOpen }) => {
       annee: new Date().getFullYear(),
       depense: 0,
     });
+    setError(null);
+    setShowErrorModal(false);
   };
 
   const handleSubmit = async (e) => {
@@ -124,22 +128,62 @@ const Projet = ({ isSidebarOpen }) => {
       const token = localStorage.getItem('userToken');
       if (!token) throw new Error('Utilisateur non connecté');
 
+      // Validate newProjet fields
+      if (!newProjet.intitule || !newProjet.rubrique_id || !newProjet.cout_estimatif) {
+        setError('Veuillez remplir tous les champs obligatoires (intitulé, rubrique, coût estimatif).');
+        setShowErrorModal(true);
+        return;
+      }
+
+      const coutEstimatif = Number(newProjet.cout_estimatif);
+      if (isNaN(coutEstimatif) || coutEstimatif <= 0) {
+        setError('Le coût estimatif doit être un nombre positif.');
+        setShowErrorModal(true);
+        return;
+      }
+
+      // Validate planning data if Annuel
+      let newDepense = 0;
+      let annee = Number(planningData.annee);
+      if (newProjet.planning === 'Annuel') {
+        newDepense = Number(planningData.depense);
+        if (isNaN(newDepense) || newDepense < 0) {
+          setError('La dépense prévue doit être un nombre positif ou zéro.');
+          setShowErrorModal(true);
+          return;
+        }
+        if (isNaN(annee) || annee < new Date().getFullYear()) {
+          setError('L’année doit être valide et ne peut pas être antérieure à l’année actuelle.');
+          setShowErrorModal(true);
+          return;
+        }
+        if (newDepense > coutEstimatif) {
+          setError('La dépense prévue ne peut pas dépasser le coût estimatif du projet.');
+          setShowErrorModal(true);
+          return;
+        }
+      }
+
       const userData = await fetchUserInfo(token);
 
       const projetResponse = await addProjet(token, {
         ...newProjet,
         departement_id: userData.departement_id,
+        cout_estimatif: coutEstimatif,
       });
 
-      if (newProjet.planning === 'Annuel') {
+      if (newProjet.planning === 'Annuel' && newDepense > 0) {
         try {
           await addPlanningAnnuel(token, {
-            annee: planningData.annee,
-            depense: planningData.depense,
+            annee: annee,
+            depense: newDepense,
             projet_id: projetResponse.id,
           });
         } catch (planningError) {
           console.error("Erreur lors de l'ajout du planning:", planningError);
+          setError(planningError.message || 'Erreur lors de l’ajout du planning annuel.');
+          setShowErrorModal(true);
+          return;
         }
       }
 
@@ -150,7 +194,8 @@ const Projet = ({ isSidebarOpen }) => {
       setShowSuccessModal(true);
       resetForm();
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Une erreur s’est produite lors de l’ajout du projet.');
+      setShowErrorModal(true);
     }
   };
 
@@ -160,6 +205,20 @@ const Projet = ({ isSidebarOpen }) => {
       const token = localStorage.getItem('userToken');
       if (!token) throw new Error('Utilisateur non connecté');
 
+      // Validate currentProjet fields
+      if (!currentProjet.intitule || !currentProjet.rubrique_id || !currentProjet.cout_estimatif) {
+        setError('Veuillez remplir tous les champs obligatoires (intitulé, rubrique, coût estimatif).');
+        setShowErrorModal(true);
+        return;
+      }
+
+      const coutEstimatif = Number(currentProjet.cout_estimatif);
+      if (isNaN(coutEstimatif) || coutEstimatif <= 0) {
+        setError('Le coût estimatif doit être un nombre positif.');
+        setShowErrorModal(true);
+        return;
+      }
+
       await updateProjet(token, currentProjet.id, {
         intitule: currentProjet.intitule,
         rubrique_id: currentProjet.rubrique_id,
@@ -168,7 +227,7 @@ const Projet = ({ isSidebarOpen }) => {
         opportunite: currentProjet.opportunite,
         composantes_projet: currentProjet.composantes_projet,
         presentation_projet: currentProjet.presentation_projet,
-        cout_estimatif: currentProjet.cout_estimatif,
+        cout_estimatif: coutEstimatif,
       });
 
       const userData = await fetchUserInfo(token);
@@ -178,7 +237,8 @@ const Projet = ({ isSidebarOpen }) => {
       closeEditModal();
       setShowSuccessModal(true);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Une erreur s’est produite lors de la mise à jour du projet.');
+      setShowErrorModal(true);
     }
   };
 
@@ -189,7 +249,8 @@ const Projet = ({ isSidebarOpen }) => {
       setDepenses(depensesData);
       setShowDepensesModal(true);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Erreur lors de la récupération des dépenses.');
+      setShowErrorModal(true);
     }
   };
 
@@ -197,46 +258,39 @@ const Projet = ({ isSidebarOpen }) => {
     try {
       const token = localStorage.getItem('userToken');
       const details = await fetchBudgetDetails(token, projetId);
-      setBudgetDetails(details);
+      const projet = projets.find(p => p.id === projetId);
+      setBudgetDetails({ ...details, statut: projet?.statut || 'En cours' });
       setShowBudgetModal(true);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Erreur lors de la récupération des détails budgétaires.');
+      setShowErrorModal(true);
     }
   };
 
   const handleExportProject = async (projet) => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 15;
     let yPosition = margin;
 
-
-
-    // Set font to Times for a professional look
     doc.setFont('times', 'bold');
-
-    // Main Title
     doc.setFontSize(16);
     const mainTitle = 'MISE A NIVEAU DES INFRASTRUCTURES DE COMMUNICATION';
     const mainTitleWidth = doc.getTextWidth(mainTitle);
     doc.text(mainTitle, (pageWidth - mainTitleWidth) / 2, yPosition);
     yPosition += 10;
 
-    // Project Sheet Title
     doc.setFontSize(14);
     const projectTitle = 'FICHE DU PROJET';
     const projectTitleWidth = doc.getTextWidth(projectTitle);
     doc.text(projectTitle, (pageWidth - projectTitleWidth) / 2, yPosition);
     yPosition += 10;
 
-    // Horizontal Line
     doc.setLineWidth(0.5);
     doc.line(margin, yPosition, pageWidth - margin, yPosition);
     yPosition += 10;
 
-    // Project Details Section (Inside a Bordered Box)
-    const detailsHeight = 110;
+    const detailsHeight = 120; // Increased to accommodate statut
     doc.setFont('times', 'normal');
     doc.setDrawColor(0);
     doc.rect(margin - 5, yPosition - 5, pageWidth - 2 * (margin - 5), detailsHeight);
@@ -250,37 +304,40 @@ const Projet = ({ isSidebarOpen }) => {
       { label: 'Opportunité :', value: projet.opportunite || 'Non spécifié' },
       { label: 'Composantes du projet :', value: projet.composantes_projet || 'Non spécifié' },
       { label: 'Coût estimatif :', value: projet.cout_estimatif ? `${projet.cout_estimatif} mDT` : 'Non spécifié' },
+      { label: 'Statut :', value: projet.statut || 'Non spécifié' },
     ];
 
     fields.forEach(field => {
       doc.setFont('times', 'bold');
       doc.text(field.label, margin, yPosition);
       doc.setFont('times', 'normal');
-      const maxWidth = pageWidth - margin - 50; // Adjust based on your layout
+      const maxWidth = pageWidth - margin - 50;
       const splitText = doc.splitTextToSize(field.value, maxWidth);
       doc.text(splitText, margin + 40, yPosition);
-      yPosition += (splitText.length * 5) + 5; // Adjust spacing based on text lines
+      yPosition += (splitText.length * 5) + 5;
     });
 
     yPosition += 10;
 
-    // Date
     doc.setFont('times', 'italic');
     doc.setFontSize(10);
     doc.text(`Août ${new Date().getFullYear()}`, margin, yPosition);
 
-    // Save the PDF
     doc.save(`${projet.intitule}_fiche.pdf`);
   };
 
   const handleCloseDepensesModal = () => {
     setShowDepensesModal(false);
     setDepenses([]);
+    setError(null);
+    setShowErrorModal(false);
   };
 
   const handleCloseBudgetModal = () => {
     setShowBudgetModal(false);
     setBudgetDetails(null);
+    setError(null);
+    setShowErrorModal(false);
   };
 
   const renderPlanningForm = () => {
@@ -327,14 +384,6 @@ const Projet = ({ isSidebarOpen }) => {
     );
   }
 
-  if (error) {
-    return (
-      <div style={containerStyle}>
-        <Alert variant="danger">Erreur: {error}</Alert>
-      </div>
-    );
-  }
-
   return (
     <div style={containerStyle} className="container-custom">
       <h2 className="text-center mb-4">Projets</h2>
@@ -355,6 +404,7 @@ const Projet = ({ isSidebarOpen }) => {
         handleSubmit={handleSubmit}
         handleInputChange={handleInputChange}
         newProjet={newProjet}
+        rubriques={rubriques}
         renderPlanningForm={renderPlanningForm}
       />
 
@@ -374,6 +424,18 @@ const Projet = ({ isSidebarOpen }) => {
         <Modal.Body>L'opération a été effectuée avec succès.</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={() => setShowSuccessModal(false)}>
+            Fermer
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showErrorModal} onHide={() => { setShowErrorModal(false); setError(null); }}>
+        <Modal.Header closeButton>
+          <Modal.Title>❌ Erreur</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{error || 'Une erreur s’est produite.'}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => { setShowErrorModal(false); setError(null); }}>
             Fermer
           </Button>
         </Modal.Footer>
@@ -420,6 +482,19 @@ const Projet = ({ isSidebarOpen }) => {
           {budgetDetails ? (
             <div className="budget-details">
               <Card className="mb-3">
+                <Card.Header>Informations du projet</Card.Header>
+                <Card.Body>
+                  <Table striped bordered>
+                    <tbody>
+                      <tr>
+                        <td><strong>Statut</strong></td>
+                        <td>{budgetDetails.statut || 'Non spécifié'}</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+              <Card className="mb-3">
                 <Card.Header>Budget global</Card.Header>
                 <Card.Body>
                   <Table striped bordered>
@@ -432,11 +507,16 @@ const Projet = ({ isSidebarOpen }) => {
                         <td><strong>Dépenses engagées</strong></td>
                         <td>{budgetDetails.depensesEngagees?.toLocaleString('fr-FR')} DT</td>
                       </tr>
+                      <tr>
+                        <td><strong>Budget restant</strong></td>
+                        <td>
+                          {(budgetDetails.budgetProjet - budgetDetails.depensesEngagees)?.toLocaleString('fr-FR')} DT
+                        </td>
+                      </tr>
                     </tbody>
                   </Table>
                 </Card.Body>
               </Card>
-
               <Card>
                 <Card.Header>Détail par année</Card.Header>
                 <Card.Body>
@@ -444,8 +524,8 @@ const Projet = ({ isSidebarOpen }) => {
                     <thead>
                       <tr>
                         <th>Année</th>
-                        <th>Budget</th>
-                        <th>Reste</th>
+                        <th>Dépenses prévues (DT)</th>
+                        <th>Reste (DT)</th>
                       </tr>
                     </thead>
                     <tbody>

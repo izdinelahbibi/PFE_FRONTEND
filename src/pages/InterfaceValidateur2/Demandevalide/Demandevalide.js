@@ -12,7 +12,9 @@ const Demandesvalide = ({ isSidebarOpen }) => {
     const fetchDemandesApprouvees = async () => {
       try {
         const token = localStorage.getItem('userToken');
-        if (!token) return;
+        if (!token) {
+          throw new Error('Token non trouvé');
+        }
 
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/demandes/approuvees`, {
           headers: {
@@ -36,6 +38,7 @@ const Demandesvalide = ({ isSidebarOpen }) => {
 
     fetchDemandesApprouvees();
   }, []);
+
   const generatePDF = (demande) => {
     const doc = new jsPDF();
     
@@ -47,7 +50,6 @@ const Demandesvalide = ({ isSidebarOpen }) => {
     doc.setFontSize(16);
     doc.setTextColor(textColor);
     doc.text('GROUPE CHIMIQUE TUNISIEN', 105, 15, null, null, 'center');
-    
     
     // Direction et Division
     doc.setFontSize(12);
@@ -71,13 +73,25 @@ const Demandesvalide = ({ isSidebarOpen }) => {
     doc.setFontSize(14);
     doc.text('B-Estimation de Prix', 15, 50);
     
-    // Tableau des matériels - Utilisation correcte de autoTable
+    // Tableau des matériels
     autoTable(doc, {
       startY: 55,
-      head: [['Matériel', 'Quantité', 'Prix Utilitaire DTHTVA', 'Prix Total DTHTVA']],
+      head: [['Matériel', 'Quantité', 'Prix Unitaire DTHTVA', 'Prix Total DTHTVA', 'Statut Final']],
       body: [
-        [demande.description|| 'N/A', demande.quantite || '0', demande.budget || '0.000 ', (demande.quantite * demande.budget || 0).toFixed(3)],
-        ['Total', '', ''  , (demande.quantite * demande.budget || 0).toFixed(3)]
+        [
+          demande.description || 'N/A',
+          demande.quantite || '0',
+          demande.budget || '0.000',
+          (demande.quantite * demande.budget || 0).toFixed(3),
+          demande.statut_final || 'N/A'
+        ],
+        [
+          'Total',
+          '',
+          '',
+          (demande.quantite * demande.budget || 0).toFixed(3),
+          ''
+        ]
       ],
       styles: {
         fontSize: 10,
@@ -132,7 +146,7 @@ const Demandesvalide = ({ isSidebarOpen }) => {
       <h2>Demandes Approuvées</h2>
       
       {demandes.length === 0 ? (
-        <Alert variant="info">Aucune demande approuvée pour le moment.</Alert>
+        <Alert variant="info">Aucune demande approuvée par le validateur 2 pour le moment.</Alert>
       ) : (
         <Table striped bordered hover responsive>
           <thead>
@@ -143,6 +157,7 @@ const Demandesvalide = ({ isSidebarOpen }) => {
               <th>Budget</th>
               <th>Priorité</th>
               <th>Date</th>
+              <th>Statut Final</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -155,6 +170,7 @@ const Demandesvalide = ({ isSidebarOpen }) => {
                 <td>{demande.budget}</td>
                 <td>{demande.priorite}</td>
                 <td>{new Date(demande.date_creation).toLocaleDateString()}</td>
+                <td>{demande.statut_final}</td>
                 <td>
                   <Button 
                     variant="success" 

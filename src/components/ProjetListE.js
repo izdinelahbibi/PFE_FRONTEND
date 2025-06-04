@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Pagination, Modal, Form } from 'react-bootstrap';
 import { Eye, Pencil, Calculator, FileEarmarkArrowDown } from 'react-bootstrap-icons';
-import './ProjetList.css';
+import './ProjetListE.css';
 
 const ProjetList = ({ projets, rubriques, openModal, openEditModal, handleShowDepenses, handleShowBudget, handleExportProject }) => {
   const [currentPage, setCurrentPage] = useState(1);

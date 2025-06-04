@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Spinner, Alert, Button, Modal, Form } from 'react-bootstrap';
 import '../ConsulterDemande/ConsulterDemande.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Pencil, Trash } from 'react-bootstrap-icons';
 
 const ConsulterDemande = ({ isSidebarOpen }) => {
   const [demandes, setDemandes] = useState([]);
@@ -194,6 +195,7 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
       <Table striped bordered hover responsive className="custom-table">
         <thead>
           <tr>
+            <th>N° Demande</th>
             <th>Projet</th>
             <th>Description</th>
             <th>Quantité</th>
@@ -208,6 +210,7 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
         <tbody>
           {filteredDemandes.map((demande) => (
             <tr key={demande.id}>
+              <td>DA-{demande.id}</td>
               <td>{demande.projet_intitule}</td>
               <td>{demande.description}</td>
               <td>{demande.quantite}</td>
@@ -223,11 +226,11 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
                   </span>
                 ) : (
                   <>
-                    <Button variant="success" size="sm" onClick={() => handleEdit(demande)}>
-                      Modifier
+                    <Button variant="success" size="sm" onClick={() => handleEdit(demande)}> 
+                      <Pencil />
                     </Button>{' '}
                     <Button variant="danger" size="sm" onClick={() => handleDelete(demande.id)}>
-                      Supprimer
+                      <Trash />
                     </Button>
                   </>
                 )}

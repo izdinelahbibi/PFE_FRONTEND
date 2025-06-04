@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Table, Button, Modal } from "react-bootstrap";
 import { FaEdit, FaEye } from "react-icons/fa";
+import { format } from "date-fns";
 
-
-const UserTable = ({ users, handleEdit, handleDelete }) => {
+const UserTable = ({ users, handleEdit }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -17,20 +17,27 @@ const UserTable = ({ users, handleEdit, handleDelete }) => {
     setSelectedUser(null);
   };
 
-  // Fonction pour afficher le libellé du rôle
+  // Function to format the date
+  const formatDate = (date) => {
+    if (!date || isNaN(new Date(date))) return "-";
+    return format(new Date(date), "dd/MM/yyyy"); 
+  };
+
+  // Function to display role label
   const getRoleLabel = (role) => {
-    switch(role) {
-      case 'validateur1': return 'Validateur1 (Demandeuse)';
-      case 'validateur2': return 'Validateur2 (Structure Achats)';
-      default: return role;
+    switch (role) {
+      case "validateur1":
+        return "Validateur1 (Demandeuse)";
+      case "validateur2":
+        return "Validateur2 (Structure Achats)";
+      default:
+        return role;
     }
   };
 
   return (
     <>
       <Table striped bordered hover>
-
-        
         <thead>
           <tr>
             <th>Nom</th>
@@ -53,7 +60,7 @@ const UserTable = ({ users, handleEdit, handleDelete }) => {
               <td>{user.matricule}</td>
               <td>{user.email}</td>
               <td>{getRoleLabel(user.role)}</td>
-              <td>{user.departement_nom || '-'}</td>
+              <td>{user.departement_nom || "-"}</td>
               <td>{user.statut_type}</td>
               <td>
                 <div className="d-flex">
@@ -88,20 +95,40 @@ const UserTable = ({ users, handleEdit, handleDelete }) => {
           {selectedUser && (
             <div className="row">
               <div className="col-md-6">
-                <p><strong>Nom:</strong> {selectedUser.nom}</p>
-                <p><strong>Prénom:</strong> {selectedUser.prenom}</p>
-                <p><strong>CIN:</strong> {selectedUser.cin}</p>
-                <p><strong>Matricule:</strong> {selectedUser.matricule}</p>
-                
-
-                <p><strong>Date Naissance:</strong> {selectedUser.dateNaissance || '-'}</p>
+                <p>
+                  <strong>Nom:</strong> {selectedUser.nom}
+                </p>
+                <p>
+                  <strong>Prénom:</strong> {selectedUser.prenom}
+                </p>
+                <p>
+                  <strong>CIN:</strong> {selectedUser.cin}
+                </p>
+                <p>
+                  <strong>Matricule:</strong> {selectedUser.matricule}
+                </p>
+                <p>
+                  <strong>Date Naissance:</strong>{" "}
+                  {formatDate(selectedUser.dateNaissance)}
+                </p>
               </div>
               <div className="col-md-6">
-                <p><strong>Adresse:</strong> {selectedUser.adresse || '-'}</p>
-                <p><strong>Email:</strong> {selectedUser.email}</p>
-                <p><strong>Rôle:</strong> {getRoleLabel(selectedUser.role)}</p>
-                <p><strong>Département:</strong> {selectedUser.departement_nom || '-'}</p>
-                <p><strong>Statut:</strong> {selectedUser.statut_type}</p>
+                <p>
+                  <strong>Adresse:</strong> {selectedUser.adresse || "-"}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedUser.email}
+                </p>
+                <p>
+                  <strong>Rôle:</strong> {getRoleLabel(selectedUser.role)}
+                </p>
+                <p>
+                  <strong>Département:</strong>{" "}
+                  {selectedUser.departement_nom || "-"}
+                </p>
+                <p>
+                  <strong>Statut:</strong> {selectedUser.statut_type}
+                </p>
               </div>
             </div>
           )}

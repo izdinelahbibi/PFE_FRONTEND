@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Button, Container, Card, Alert, Spinner } from 'react-bootstrap';
-import { sendPasswordRequest } from '../services/authService';
+import { sendPasswordRequest, checkEmailExists } from '../services/authService';
 import { motion } from 'framer-motion';
-import './Forgot.css'; 
+import './Forgot.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -19,6 +19,15 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
+      // Step 1: Check if email exists
+      const emailCheckResponse = await checkEmailExists(email);
+      if (!emailCheckResponse.exists) {
+        setError("Cet email n'existe pas dans notre Systéme");
+        setIsLoading(false);
+        return;
+      }
+
+      // Step 2: Proceed with password reset request if email exists
       await sendPasswordRequest(email, description);
       setShowSuccess(true);
       setTimeout(() => {

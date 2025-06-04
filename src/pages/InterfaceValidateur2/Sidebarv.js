@@ -84,6 +84,8 @@ const Sidebar = ({ setActiveComponent, setIsSidebarOpen, onLogout }) => {
           <span className="tooltip"> Profil</span>
         </li>
       </div>
+
+      
       
     </div>
   );

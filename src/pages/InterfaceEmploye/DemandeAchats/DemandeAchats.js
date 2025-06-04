@@ -99,7 +99,7 @@ const DemandeAchats = ({ isSidebarOpen }) => {
 
       await createDemandeAchats(token, data);
       setShowSuccessModal(true);
-      setFormData(initialFormState); // Réinitialiser le formulaire
+      setFormData(initialFormState); 
     } catch (err) {
       setError(err.message);
     }

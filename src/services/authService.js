@@ -1,6 +1,3 @@
-
-
-
 export const login = async (email, password) => {
   const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
     method: 'POST',
@@ -54,4 +51,41 @@ export const sendPasswordRequest = async (email, description) => {
   }
 
   return response.json();
+};
+
+// New function to check if email exists
+export const checkEmailExists = async (email) => {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/check-email`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    let errorMessage = "Erreur lors de la vérification de l'email";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch (err) {
+      const errorText = await response.text();
+      errorMessage = errorText || errorMessage;
+    }
+    throw new Error(errorMessage);
+  }
+
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    throw new Error('Réponse du serveur invalide');
+  }
+
+  const data = await response.json();
+
+  // Vérifier que la réponse contient la propriété 'exists'
+  if (data.exists === undefined) {
+    throw new Error('Réponse du serveur incomplète');
+  }
+
+  return data; // Retourne { exists: true/false }
 };
