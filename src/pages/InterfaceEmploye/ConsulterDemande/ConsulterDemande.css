@@ -3,9 +3,11 @@
   --secondary-color: #6b7280; /* Gray for secondary elements */
   --danger-color: #dc2626; /* Red for delete buttons */
   --success-color: #16a34a; /* Green for success states */
+  --info-color: #0284c7; /* Blue for info buttons (Prédire Délai) */
   --background-color: #f9fafb; /* Light background */
   --card-background: #ffffff; /* White for cards and modals */
   --text-color: #1f2937; /* Dark gray for text */
+  --highlight-color: #e0f7fa; /* Light cyan for highlighted rows */
   --border-radius: 8px;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
@@ -13,7 +15,7 @@
 
 body {
   background-color: var(--background-color);
-  font-family: 'Inter', sans-serif; /* Modern, clean font */
+  font-family: 'Inter', sans-serif;
   color: var(--text-color);
 }
 
@@ -52,28 +54,61 @@ body {
 .custom-table .btn {
   border-radius: var(--border-radius);
   padding: 8px 16px;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: var(--shadow);
+  border: none;
 }
 
+/* Modifier Button (Success) */
 .custom-table .btn-success {
   background-color: var(--success-color);
-  border-color: var(--success-color);
+  color: #ffffff;
 }
 
 .custom-table .btn-success:hover {
   background-color: #15803d;
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(22, 163, 74, 0.3);
 }
 
+/* Supprimer Button (Danger) */
 .custom-table .btn-danger {
   background-color: var(--danger-color);
-  border-color: var(--danger-color);
+  color: #ffffff;
 }
 
 .custom-table .btn-danger:hover {
   background-color: #b91c1c;
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Prédire Délai Button (Info) */
+.custom-table .btn-info {
+  background-color: var(--info-color);
+  color: #ffffff;
+}
+
+.custom-table .btn-info:hover {
+  background-color: #0369a1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(2, 132, 199, 0.3);
+}
+
+.custom-table .btn-info:disabled {
+  background-color: #93c5fd;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
 }
 
 h2 {
@@ -216,6 +251,11 @@ h2 {
     font-size: 0.9rem;
     padding: 8px;
   }
+
+  .custom-table .btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 576px) {
@@ -225,42 +265,17 @@ h2 {
     white-space: nowrap;
   }
 
-  .btn {
-    padding: 6px 12px;
-    font-size: 0.85rem;
+  .custom-table th,
+  .custom-table td {
+    padding: 8px;
   }
-}
 
-.custom-table .btn {
-  border-radius: var(--border-radius);
-  padding: 8px 16px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px; /* Space for potential icons */
-  box-shadow: var(--shadow);
-  border: none; /* Remove default border for cleaner look */
-}
+  .custom-table .btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
 
-/* Modifier Button (Success) */
-.custom-table .btn-success {
-  background-color: var(--success-color);
-  color: #ffffff;
-}
-
-.custom-table .btn-success:hover {
-  background-color: #15803d; /* Darker green on hover */
-  transform: translateY(-2px); /* Subtle lift effect */
-  box-shadow: 0 6px 12px rgba(22, 163, 74, 0.3); /* Enhanced shadow on hover */
-}
-
-/* Supprimer Button (Danger) */
-.custom-table .btn-danger {
-  background-color: var(--danger-color);
-  color: #ffffff;
+  .form-group {
+    margin-bottom: 15px;
+  }
 }

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Spinner, Alert, Button, Modal, Form } from 'react-bootstrap';
+import React, { useState, useEffect, useRef } from 'react';
+import { Table, Spinner, Alert, Button, Modal, Form, Badge } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../ConsulterDemande/ConsulterDemande.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Pencil, Trash } from 'react-bootstrap-icons';
@@ -13,48 +15,58 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
   const [selectedDemande, setSelectedDemande] = useState(null);
   const [searchDate, setSearchDate] = useState('');
   const [searchStatus, setSearchStatus] = useState('');
+  const [prediction, setPrediction] = useState(null);
+  const [predictionLoading, setPredictionLoading] = useState(false);
+  const [predictionError, setPredictionError] = useState(null);
+  const [highlightedRowId, setHighlightedRowId] = useState(null);
+  const modifiedRowRef = useRef(null);
 
   const containerStyle = {
     marginLeft: isSidebarOpen ? '250px' : '78px',
     padding: '20px',
     transition: 'margin-left 0.5s ease',
+    maxWidth: '100%',
+    overflowX: 'auto'
+  };
+
+  const fetchDemandes = async () => {
+    try {
+      const token = localStorage.getItem('userToken');
+      if (!token) {
+        throw new Error('Utilisateur non connecté');
+      }
+
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/demandeachats`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des demandes d\'achats');
+      }
+
+      const data = await response.json();
+      console.log('API Response (demandes):', data); // Debug API response
+      const sortedData = data.sort((a, b) => 
+        new Date(b.date_creation) - new Date(a.date_creation)
+      );
+      setDemandes(sortedData);
+      setFilteredDemandes(sortedData);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchDemandes = async () => {
-      try {
-        const token = localStorage.getItem('userToken');
-        if (!token) {
-          throw new Error('Utilisateur non connecté');
-        }
-
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/demandeachats`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des demandes d\'achats');
-        }
-
-        const data = await response.json();
-        setDemandes(data);
-        setFilteredDemandes(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     fetchDemandes();
   }, []);
 
-  // Filter demands based on date and status
   useEffect(() => {
-    let filtered = demandes;
+    let filtered = [...demandes];
 
     if (searchDate) {
       filtered = filtered.filter((demande) =>
@@ -63,10 +75,14 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
     }
 
     if (searchStatus) {
-      filtered = filtered.filter((demande) => demande.statut_final === searchStatus);
+      filtered = filtered.filter((demande) => {
+        const statut = demande.statut_final?.trim().toLowerCase() || 'en attente'; // Normalize and default to 'en attente'
+        return statut === searchStatus.trim().toLowerCase();
+      });
     }
 
     setFilteredDemandes(filtered);
+    console.log('Filtered Demandes:', filtered); // Debug filtered results
   }, [searchDate, searchStatus, demandes]);
 
   const handleDelete = async (id) => {
@@ -87,14 +103,16 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
         throw new Error('Erreur lors de la suppression de la demande d\'achat');
       }
 
-      setDemandes(demandes.filter((demande) => demande.id !== id));
+      await fetchDemandes();
+      toast.success('Demande supprimée avec succès !');
     } catch (err) {
       setError(err.message);
+      toast.error(`Erreur: ${err.message}`);
     }
   };
 
   const handleEdit = (demande) => {
-    setSelectedDemande(demande);
+    setSelectedDemande({ ...demande });
     setShowModal(true);
   };
 
@@ -124,15 +142,24 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
       }
 
       const updatedDemande = await response.json();
-      setDemandes(
-        demandes.map((demande) =>
-          demande.id === updatedDemande.id ? updatedDemande : demande
-        )
-      );
+      console.log('API Response (updatedDemande):', updatedDemande);
+
+      await fetchDemandes();
+
+      setHighlightedRowId(updatedDemande.id);
+      setTimeout(() => setHighlightedRowId(null), 3000);
 
       handleCloseModal();
+      toast.success('Demande modifiée avec succès !');
+
+      setTimeout(() => {
+        if (modifiedRowRef.current) {
+          modifiedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
     } catch (err) {
       setError(err.message);
+      toast.error(`Erreur: ${err.message}`);
     }
   };
 
@@ -142,6 +169,64 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
       ...selectedDemande,
       [name]: value,
     });
+  };
+
+  const handlePredict = async (demande) => {
+    setPredictionLoading(true);
+    setPredictionError(null);
+    setPrediction(null);
+
+    try {
+      const token = localStorage.getItem('userToken');
+      if (!token) {
+        throw new Error('Utilisateur non connecté');
+      }
+
+      if (demande.statut_final === 'Approuvé' || demande.statut_final === 'Rejeté') {
+        throw new Error('La demande a déjà été traitée, impossible de prédire le délai');
+      }
+
+      const predictionData = {
+        ...demande,
+        jour_semaine_creation: new Date(demande.date_creation).getDay() + 1,
+        heure_creation: new Date(demande.date_creation).getHours()
+      };
+
+      const response = await fetch(
+        `${process.env.REACT_APP_PREDICTION_API_URL || 'http://localhost:5001'}/predict-delai`, 
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(predictionData),
+        }
+      );
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
+        }
+        throw new Error(errorData.message || 'Erreur lors de la prédiction');
+      }
+
+      const data = await response.json();
+      const delaiJoursDecimal = data.delai_estime_jours;
+      setPrediction({
+        jours: Math.floor(delaiJoursDecimal),
+        heures: Math.round((delaiJoursDecimal % 1) * 24)
+      });
+      toast.success('Prédiction effectuée avec succès !');
+    } catch (err) {
+      setPredictionError(err.message);
+      toast.error(`Erreur: ${err.message}`);
+    } finally {
+      setPredictionLoading(false);
+    }
   };
 
   if (loading) {
@@ -166,9 +251,9 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
 
   return (
     <div style={containerStyle}>
+      <ToastContainer />
       <h2 className="text-center mb-4">Liste des Demandes d'Achats</h2>
 
-      {/* Filter Section */}
       <Form className="mb-4">
         <Form.Group controlId="formSearchDate" className="mb-3">
           <Form.Label>Filtrer par date de création</Form.Label>
@@ -192,55 +277,110 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
         </Form.Group>
       </Form>
 
-      <Table striped bordered hover responsive className="custom-table">
-        <thead>
-          <tr>
-            <th>N° Demande</th>
-            <th>Projet</th>
-            <th>Description</th>
-            <th>Quantité</th>
-            <th>Budget</th>
-            <th>Caractéristiques Techniques</th>
-            <th>Motif de Refus</th>
-            <th>Statut</th>
-            <th>Date de Création</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDemandes.map((demande) => (
-            <tr key={demande.id}>
-              <td>DA-{demande.id}</td>
-              <td>{demande.projet_intitule}</td>
-              <td>{demande.description}</td>
-              <td>{demande.quantite}</td>
-              <td>{demande.budget}</td>
-              <td>{demande.caracteristique_tech}</td>
-              <td>{demande.validateur2_motif || 'N/A'}</td>
-              <td>{demande.statut_final}</td>
-              <td>{new Date(demande.date_creation).toLocaleDateString()}</td>
-              <td>
-                {demande.statut_final === 'Approuvé' || demande.statut_final === 'Rejeté' ? (
-                  <span style={{ color: demande.statut_final === 'Approuvé' ? 'green' : 'red' }}>
-                    {demande.statut_final === 'Approuvé' ? 'Demande approuvée' : 'Demande rejetée'}
-                  </span>
-                ) : (
-                  <>
-                    <Button variant="success" size="sm" onClick={() => handleEdit(demande)}> 
-                      <Pencil />
-                    </Button>{' '}
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(demande.id)}>
-                      <Trash />
-                    </Button>
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      {predictionLoading && (
+        <div className="text-center mb-3">
+          <Spinner animation="border" variant="info" />
+          <p>Calcul de la prédiction en cours...</p>
+        </div>
+      )}
+      
+      {predictionError && (
+        <Alert variant="danger" className="text-center">
+          {predictionError}
+        </Alert>
+      )}
+      
+      {prediction !== null && (
+        <Alert variant={prediction.jours > 7 ? "warning" : "success"} className="text-center">
+          <strong>Délai de validation estimé :</strong> 
+          {prediction.jours > 0 && `${prediction.jours} jour${prediction.jours > 1 ? 's' : ''}`}
+          {prediction.jours > 0 && prediction.heures > 0 && ' et '}
+          {prediction.heures > 0 && `${prediction.heures} heure${prediction.heures > 1 ? 's' : ''}`}
+          {prediction.jours === 0 && prediction.heures === 0 && 'Moins d\'une heure'}
+          
+          {prediction.jours > 7 && (
+            <div className="mt-2">
+              <Badge bg="danger">Délai long</Badge>
+            </div>
+          )}
+        </Alert>
+      )}
 
-      {/* Modal de modification */}
+      <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+        <Table striped bordered hover responsive className="custom-table" style={{ tableLayout: 'auto', width: '100%' }}>
+          <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
+            <tr>
+              <th style={{ minWidth: '100px' }}>N° Demande</th>
+              <th style={{ minWidth: '150px' }}>Projet</th>
+              <th style={{ minWidth: '200px' }}>Description</th>
+              <th style={{ minWidth: '100px' }}>Quantité</th>
+              <th style={{ minWidth: '100px' }}>Budget</th>
+              <th style={{ minWidth: '200px' }}>Caractéristiques Techniques</th>
+              <th style={{ minWidth: '150px' }}>Motif de Refus</th>
+              <th style={{ minWidth: '120px' }}>Statut</th>
+              <th style={{ minWidth: '120px' }}>Date de Création</th>
+              <th style={{ minWidth: '120px' }}>Actions</th>
+              <th style={{ minWidth: '120px' }}>Prédiction</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredDemandes.map((demande) => (
+              <tr
+                key={demande.id}
+                ref={highlightedRowId === demande.id ? modifiedRowRef : null}
+                style={highlightedRowId === demande.id ? { backgroundColor: '#e0f7fa' } : {}}
+              >
+                <td>DA-{demande.id}</td>
+                <td>{demande.projet_intitule}</td>
+                <td>{demande.description}</td>
+                <td>{demande.quantite}</td>
+                <td>{demande.budget}</td>
+                <td>{demande.caracteristique_tech}</td>
+                <td>{demande.validateur2_motif || 'N/A'}</td>
+                <td>
+                  <Badge 
+                    bg={
+                      demande.statut_final === 'Approuvé' ? 'success' : 
+                      demande.statut_final === 'Rejeté' ? 'danger' : 
+                      'warning'
+                    }
+                  >
+                    {demande.statut_final || 'En attente'}
+                  </Badge>
+                </td>
+                <td>{new Date(demande.date_creation).toLocaleDateString()}</td>
+                <td>
+                  {demande.statut_final === 'Approuvé' || demande.statut_final === 'Rejeté' ? (
+                    <span style={{ color: demande.statut_final === 'Approuvé' ? 'green' : 'red' }}>
+                      {demande.statut_final === 'Approuvé' ? 'Demande approuvée' : 'Demande rejetée'}
+                    </span>
+                  ) : (
+                    <>
+                      <Button variant="success" size="sm" onClick={() => handleEdit(demande)}>
+                        <Pencil />
+                      </Button>{' '}
+                      <Button variant="danger" size="sm" onClick={() => handleDelete(demande.id)}>
+                        <Trash />
+                      </Button>
+                    </>
+                  )}
+                </td>
+                <td>
+                  <Button
+                    variant="info"
+                    size="sm"
+                    onClick={() => handlePredict(demande)}
+                    disabled={predictionLoading || demande.statut_final === 'Approuvé' || demande.statut_final === 'Rejeté'}
+                  >
+                    Prédire Délai
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Modifier la demande</Modal.Title>
@@ -248,39 +388,39 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
         <Modal.Body>
           {selectedDemande && (
             <Form>
-              <Form.Group controlId="formDescription">
+              <Form.Group controlId="formDescription" className="mb-3">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                   type="text"
                   name="description"
-                  value={selectedDemande.description}
+                  value={selectedDemande.description || ''}
                   onChange={handleChange}
                 />
               </Form.Group>
-              <Form.Group controlId="formQuantite">
+              <Form.Group controlId="formQuantite" className="mb-3">
                 <Form.Label>Quantité</Form.Label>
                 <Form.Control
                   type="number"
                   name="quantite"
-                  value={selectedDemande.quantite}
+                  value={selectedDemande.quantite || ''}
                   onChange={handleChange}
                 />
               </Form.Group>
-              <Form.Group controlId="formBudget">
+              <Form.Group controlId="formBudget" className="mb-3">
                 <Form.Label>Budget</Form.Label>
                 <Form.Control
                   type="number"
                   name="budget"
-                  value={selectedDemande.budget}
+                  value={selectedDemande.budget || ''}
                   onChange={handleChange}
                 />
               </Form.Group>
-              <Form.Group controlId="formCaracteristiqueTech">
+              <Form.Group controlId="formCaracteristiqueTech" className="mb-3">
                 <Form.Label>Caractéristiques Techniques</Form.Label>
                 <Form.Control
                   as="textarea"
                   name="caracteristique_tech"
-                  value={selectedDemande.caracteristique_tech}
+                  value={selectedDemande.caracteristique_tech || ''}
                   onChange={handleChange}
                   rows={3}
                 />
@@ -293,7 +433,7 @@ const ConsulterDemande = ({ isSidebarOpen }) => {
             Annuler
           </Button>
           <Button variant="primary" onClick={handleSaveChanges}>
-            Enregistrer les modifications
+            Enregistrer
           </Button>
         </Modal.Footer>
       </Modal>

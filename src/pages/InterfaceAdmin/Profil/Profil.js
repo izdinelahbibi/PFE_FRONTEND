@@ -58,7 +58,7 @@ const Profil = () => {
         email: data.email || '',
         role: data.role || '',
         Telephone: data.Telephone || '',
-        photo: data.photo ? `${process.env.REACT_APP_API_URL}/${data.photo}` : '',
+        photo: data.photo ? `${process.env.REACT_APP_API_URL}${data.photo}` : '',
       });
     } catch (error) {
       console.error('Erreur:', error);
@@ -73,7 +73,7 @@ const Profil = () => {
     if (!administrateur.nom.trim()) newErrors.nom = 'Le nom est obligatoire';
     if (!administrateur.prenom.trim()) newErrors.prenom = 'Le prénom est obligatoire';
     if (!administrateur.Telephone.trim()) newErrors.Telephone = 'Le téléphone est obligatoire';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -84,7 +84,7 @@ const Profil = () => {
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -97,14 +97,14 @@ const Profil = () => {
         setMessage({ text: 'La taille du fichier ne doit pas dépasser 2MB', type: 'danger' });
         return;
       }
-      
+
       if (!file.type.match('image.*')) {
         setMessage({ text: 'Veuillez sélectionner un fichier image valide', type: 'danger' });
         return;
       }
 
       setSelectedFile(file);
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result);
@@ -217,9 +217,9 @@ const Profil = () => {
         <div className="profile-card">
           <div className="profile-photo-section">
             {administrateur.photo ? (
-              <Image 
-                src={administrateur.photo} 
-                roundedCircle 
+              <Image
+                src={administrateur.photo}
+                roundedCircle
                 className="profile-photo"
                 alt="Photo de profil"
               />
@@ -240,8 +240,8 @@ const Profil = () => {
           </div>
 
           <div className="profile-actions">
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               onClick={() => setShowModal(true)}
               className="profile-button"
             >
@@ -305,9 +305,9 @@ const Profil = () => {
 
             <Form.Group controlId="formPhoto" className="mb-3">
               <Form.Label>Photo de profil</Form.Label>
-              <Form.Control 
-                type="file" 
-                accept="image/*" 
+              <Form.Control
+                type="file"
+                accept="image/*"
                 onChange={handleFileChange}
                 disabled={uploadingPhoto}
               />
@@ -318,19 +318,19 @@ const Profil = () => {
 
             {(photoPreview || administrateur.photo) && (
               <div className="text-center mt-3">
-                <Image 
-                  src={photoPreview || administrateur.photo} 
-                  thumbnail 
-                  style={{ maxWidth: '200px' }} 
-                  alt="Aperçu photo de profil" 
+                <Image
+                  src={photoPreview || administrateur.photo}
+                  thumbnail
+                  style={{ maxWidth: '200px' }}
+                  alt="Aperçu photo de profil"
                 />
               </div>
             )}
           </Form>
         </Modal.Body>
         <Modal.Footer className="modal-footer">
-          <Button 
-            variant="secondary" 
+          <Button
+            variant="secondary"
             onClick={() => {
               setShowModal(false);
               setSelectedFile(null);
@@ -340,8 +340,8 @@ const Profil = () => {
           >
             Annuler
           </Button>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={handleSave}
             disabled={uploadingPhoto}
           >
